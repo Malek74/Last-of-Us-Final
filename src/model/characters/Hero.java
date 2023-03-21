@@ -15,9 +15,14 @@ public class Hero extends Character{
 	public Hero(String name, int maxHp, int attackDmg, int maxActions) {
 		super(name,maxHp,attackDmg);
 		this.maxActions=maxActions;
+		actionsAvailable = maxActions;
 	}
 	
 //getters
+	public int getActionsAvailable() {
+		return actionsAvailable;
+	}
+
 	public int getMaxActions() {
 		return maxActions;
 	}
@@ -29,4 +34,19 @@ public class Hero extends Character{
 	public ArrayList<Supply> getSupplyInventory() {
 		return supplyInventory;
 	}
+
+	public boolean getSpecialAction() {
+		return specialAction;
+	}
+
+// setters
+	public void setActionsAvailable(int numOfActions) {
+		actionsAvailable = numOfActions;
+	}
+
+	public void setSpecialAction(boolean SpecialActionFlag){
+		specialAction = SpecialActionFlag;
+	}
+
+
 }
