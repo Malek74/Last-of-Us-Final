@@ -1,5 +1,6 @@
 package model.characters;
 import java.awt.Point;
+import java.lang.management.ThreadInfo;
 
 public abstract class Character {
 	private String name;
@@ -35,7 +36,12 @@ public abstract class Character {
 	}
 
 	public void setCurrentHp(int currentHp) {
-		this.currentHp = currentHp;
+		if(currentHp>maxHp){
+			this.currentHp=maxHp;
+		}
+		else{
+			this.currentHp=currentHp;
+		}
 	}
 
 	public Point getLocation() {

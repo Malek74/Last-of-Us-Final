@@ -35,7 +35,7 @@ public class Hero extends Character{
 		return supplyInventory;
 	}
 
-	public boolean getSpecialAction() {
+	public boolean isSpecialAction() {
 		return specialAction;
 	}
 
