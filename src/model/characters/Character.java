@@ -14,6 +14,7 @@ public abstract class Character {
 		this.name=name;
 		this.maxHp=maxHp;
 		this.attackDmg=attackDmg;
+		this.currentHp=maxHp;
 	}
 
 	//getters
@@ -28,4 +29,30 @@ public abstract class Character {
 	public int getAttackDmg() {
 		return attackDmg;
 	}
+
+	public int getCurrentHp() {
+		return currentHp;
+	}
+
+	public void setCurrentHp(int currentHp) {
+		this.currentHp = currentHp;
+	}
+
+	public Point getLocation() {
+		return location;
+	}
+
+	public void setLocation(Point location) {
+		this.location = location;
+	}
+
+	public Character getTarget() {
+		return target;
+	}
+
+	public void setTarget(Character target) {
+		this.target = target;
+	}
+
+	
 }
