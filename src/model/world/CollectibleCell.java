@@ -4,8 +4,12 @@ import model.collectibles.Collectible;
 
 public class CollectibleCell extends Cell {
     private Collectible collectible;
-    //parameter passed or not ?
-    public CollectibleCell() {
+
+    public CollectibleCell(Collectible collectible) {
         super();
+        this.collectible=collectible;
+    }
+    public Collectible getCollectible() {
+        return collectible;
     }
 }
