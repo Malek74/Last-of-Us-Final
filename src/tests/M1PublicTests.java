@@ -659,20 +659,20 @@ public class M1PublicTests {
 		testClassIsAbstract(Class.forName(cellPath));
 	}
 
-//	@Test(timeout = 10000)
-//	
-//	public void testRandomisationOfTrapCellConstructor()
-//			throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
-//			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-//		Constructor<?> trapCellConstructor = Class.forName(trapCellPath).getConstructor();
-//		Set<Integer> set = new HashSet<Integer>();
-//
-//		for (int i = 0; i < 200; i++) {
-//			Object trapCell = trapCellConstructor.newInstance();
-//			set.add(((TrapCell) trapCell).getTrapDamage());
-//		}
-//		assertEquals(set.contains(10) && set.contains(20) && set.contains(30) && set.size() == 3, true);
-//	}
+	@Test(timeout = 10000)
+	
+	public void testRandomisationOfTrapCellConstructor()
+			throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
+			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		Constructor<?> trapCellConstructor = Class.forName(trapCellPath).getConstructor();
+		Set<Integer> set = new HashSet<Integer>();
+
+		for (int i = 0; i < 200; i++) {
+			Object trapCell = trapCellConstructor.newInstance();
+			set.add(((TrapCell) trapCell).getTrapDamage());
+		}
+		assertEquals(set.contains(10) && set.contains(20) && set.contains(30) && set.size() == 3, true);
+	}
 
 	@Test(timeout = 1000)
 	public void testSetterForInstanceVariableCharacterExistsInClassCharacterCell() throws Exception {
