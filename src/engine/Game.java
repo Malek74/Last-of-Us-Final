@@ -13,13 +13,7 @@ public class Game {
     public static ArrayList<Zombie> zombies;
     public static Cell [][] map;
 
-    public static void main(String[] args){
-        try {
-            loadHeroes("src\\engine\\test_heros.csv");
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-    }
+   
     public static void loadHeroes(String filePath)throws Exception {
         int i = 0;
         
@@ -33,23 +27,24 @@ public class Game {
                 switch (heroData[1]){
                     case "FIGH":
                     hero=new Fighter(heroData[0],Integer.parseInt( heroData[2]), Integer.parseInt( heroData[4]),Integer.parseInt( heroData[3]));
+                    availableHeroes.add(hero);
                     break;
     
                     case "MED":
                     hero=new Medic(heroData[0],Integer.parseInt( heroData[2]), Integer.parseInt( heroData[4]),Integer.parseInt( heroData[3]));
+                    availableHeroes.add(hero);
                     break;
     
                     case "EXP":
                     hero=new Explorer(heroData[0],Integer.parseInt( heroData[2]), Integer.parseInt( heroData[4]),Integer.parseInt( heroData[3]));
+                    availableHeroes.add(hero);
                     break;
-    
-                    default:
-                    hero=new Hero(heroData[0],Integer.parseInt( heroData[2]), Integer.parseInt( heroData[4]),Integer.parseInt( heroData[3]));
     
                 }
     
                 
-                availableHeroes.add(i, hero);
+                
+
 
                 //find and adds the next complete token from this scanner
                 i++;
