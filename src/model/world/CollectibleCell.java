@@ -9,6 +9,11 @@ public class CollectibleCell extends Cell {
         super();
         this.collectible=collectible;
     }
+
+    public CollectibleCell(){
+        super();
+    }
+    
     public Collectible getCollectible() {
         return collectible;
     }

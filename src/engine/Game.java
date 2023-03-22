@@ -8,19 +8,19 @@ import model.characters.*;
 import model.world.Cell;
 
 public class Game {
-    public static ArrayList<Hero> availableHeros;
-    public static ArrayList<Hero> heros;
+    public static ArrayList<Hero> availableHeroes=new ArrayList<>();
+    public static ArrayList<Hero> heroes;
     public static ArrayList<Zombie> zombies;
     public static Cell [][] map;
 
     public static void main(String[] args){
         try {
-            loadHeros("src\\engine\\test_heros.csv",availableHeros);
+            loadHeroes("src\\engine\\test_heros.csv");
         } catch (Exception e) {
             // TODO: handle exception
         }
     }
-    public static void loadHeros(String filePath,ArrayList<Hero> availableHeros)throws Exception {
+    public static void loadHeroes(String filePath)throws Exception {
         int i = 0;
         
             Scanner sc = new Scanner(new File(filePath));
@@ -49,7 +49,7 @@ public class Game {
                 }
     
                 
-                availableHeros.add(i, hero);
+                availableHeroes.add(i, hero);
 
                 //find and adds the next complete token from this scanner
                 i++;

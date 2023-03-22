@@ -16,6 +16,8 @@ public class Hero extends Character{
 		super(name,maxHp,attackDmg);
 		this.maxActions=maxActions;
 		actionsAvailable = maxActions;
+		vaccineInventory= new ArrayList<>();
+		supplyInventory= new ArrayList<>();
 	}
 	
 //getters
