@@ -1,6 +1,6 @@
 package model.characters;
 import java.awt.Point;
-import java.lang.management.ThreadInfo;
+
 
 public abstract class Character {
 	private String name;
