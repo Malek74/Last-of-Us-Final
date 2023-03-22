@@ -40,7 +40,12 @@ public abstract class Character {
 			this.currentHp=maxHp;
 		}
 		else{
-			this.currentHp=currentHp;
+			if(currentHp<0){
+				currentHp=0;
+			}
+			else{
+				this.currentHp=currentHp;
+			}
 		}
 	}
 

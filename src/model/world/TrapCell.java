@@ -5,9 +5,9 @@ public class TrapCell extends Cell{
 
     public TrapCell(){
     	super();
-        int[] damage={10,20,30};
-        int pos= (int) Math.round(Math.random()*2);
-        trapDamage=damage[pos];
+        trapDamage= (int) Math.round(Math.random()*2)+1;
+        trapDamage*=10;
+
         
     }
     public int getTrapDamage() {

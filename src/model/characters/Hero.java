@@ -29,6 +29,7 @@ public abstract class Hero extends Character{
 		return maxActions;
 	}
 
+	
 	public ArrayList<Vaccine> getVaccineInventory() {
 		return vaccineInventory;
 	}
