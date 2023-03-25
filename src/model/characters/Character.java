@@ -41,7 +41,7 @@ public abstract class Character {
 		}
 		else{
 			if(currentHp<0){
-				currentHp=0;
+				this.currentHp=0;
 			}
 			else{
 				this.currentHp=currentHp;
