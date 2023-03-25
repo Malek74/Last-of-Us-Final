@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-
 import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -660,7 +659,6 @@ public class M1PublicTests {
 	}
 
 	@Test(timeout = 10000)
-	
 	public void testRandomisationOfTrapCellConstructor()
 			throws NoSuchMethodException, SecurityException, ClassNotFoundException, InstantiationException,
 			IllegalAccessException, IllegalArgumentException, InvocationTargetException {
