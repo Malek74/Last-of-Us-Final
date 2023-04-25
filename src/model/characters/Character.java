@@ -1,4 +1,5 @@
 package model.characters;
+
 import java.awt.Point;
 
 
@@ -9,44 +10,29 @@ public abstract class Character {
 	private int currentHp;
 	private int attackDmg;
 	private Character target;
+
 	
-	//constructor
-	public Character(String name,int maxHp,int attackDmg) {
+	public Character() {
+	}
+	
+
+	public Character(String name, int maxHp, int attackDmg) {
 		this.name=name;
-		this.maxHp=maxHp;
-		this.attackDmg=attackDmg;
-		this.currentHp=maxHp;
+		this.maxHp = maxHp;
+		this.currentHp = maxHp;
+		this.attackDmg = attackDmg;
+	}
+		
+	public Character getTarget() {
+		return target;
 	}
 
-	//getters
+	public void setTarget(Character target) {
+		this.target = target;
+	}
+	
 	public String getName() {
 		return name;
-	}
-
-	public int getMaxHp() {
-		return maxHp;
-	}
-
-	public int getAttackDmg() {
-		return attackDmg;
-	}
-
-	public int getCurrentHp() {
-		return currentHp;
-	}
-
-	public void setCurrentHp(int currentHp) {
-		if(currentHp>maxHp){
-			this.currentHp=maxHp;
-		}
-		else{
-			if(currentHp<0){
-				currentHp=0;
-			}
-			else{
-				this.currentHp=currentHp;
-			}
-		}
 	}
 
 	public Point getLocation() {
@@ -57,13 +43,26 @@ public abstract class Character {
 		this.location = location;
 	}
 
-	public Character getTarget() {
-		return target;
+	public int getMaxHp() {
+		return maxHp;
 	}
 
-	public void setTarget(Character target) {
-		this.target = target;
+	public int getCurrentHp() {
+		return currentHp;
 	}
 
+	public void setCurrentHp(int currentHp) {
+		if(currentHp < 0) 
+			this.currentHp = 0;
+		else if(currentHp > maxHp) 
+			this.currentHp = maxHp;
+		else 
+			this.currentHp = currentHp;
+	}
+
+	public int getAttackDmg() {
+		return attackDmg;
+	}
 	
+
 }

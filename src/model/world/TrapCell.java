@@ -1,20 +1,24 @@
 package model.world;
 
-public class TrapCell extends Cell{
-    private int trapDamage;
+import java.util.Random;
 
-    public TrapCell(){
-    	super();
-        trapDamage= (int) Math.round(Math.random()*2)+1;
-        trapDamage*=10;
+public class TrapCell extends Cell {
 
-        
-    }
-    public int getTrapDamage() {
-        return trapDamage;
-    }
+	private int trapDamage;
+	
+	public TrapCell() {
+		int x [] = {10,20,30};
+ 		Random r = new Random();
+		int result = r.nextInt(3);
+		trapDamage = x[result];
+		
+		
+	}
+
+	public int getTrapDamage() {
+		return trapDamage;
+	}
+	
 
 
-
-   
 }
