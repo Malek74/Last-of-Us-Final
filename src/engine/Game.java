@@ -4,16 +4,15 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.awt.*;
 
-import java.util.Random.*;
+import java.util.Random;
 import model.characters.*;
-
-
 import model.collectibles.*;
-import model.world.*;
-
+import model.world.Cell;
+import model.world.CharacterCell;
+import model.world.CollectibleCell;
+import model.world.TrapCell;
 
 public class Game {
 	
@@ -55,17 +54,16 @@ public class Game {
 		
 	}
 
-	public static Point randomPoint()
+	private static Point randomPoint()
 	{
 		Random rand = new Random();
 
-		int randomX = rand.nextInt(15);
-		int randomY = rand.nextInt(15);
-		//keeps generateing random x & y co-ordinates till he finds empty cell
+		int randomX = rand.nextInt(16);
+		int randomY = rand.nextInt(16);
 		while(map[randomX][randomY] != null)
 		{
-			randomX = rand.nextInt(15);
-			randomY = rand.nextInt(15);
+			randomX = rand.nextInt(16);
+			randomY = rand.nextInt(16);
 		}
 		return new Point(randomX,randomY);
 
