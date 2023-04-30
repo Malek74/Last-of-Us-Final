@@ -10,6 +10,7 @@ import exceptions.NotEnoughActionsException;
 import model.collectibles.Supply;
 import model.collectibles.Vaccine;
 import model.world.Cell;
+import model.world.CharacterCell;
 import engine.*;
 
 
@@ -156,8 +157,21 @@ public abstract class Hero extends Character {
 			if(!(this.getTarget() instanceof Zombie)){
 				throw new InvalidTargetException("Target is not a Zombie");
 			}
-			ArrayList<Cell> cells = this.ge
-			
+
+			ArrayList<Cell> adjacentCells = this.getAdjacentCells();
+		
+			//gets co-ordinates of target
+			int x= (int) getTarget().getLocation().getX();
+			int y= (int) getTarget().getLocation().getY();
+
+			//check that target is within reach
+			if(!(adjacentCells.contains(Game.map[x][y]))){
+				throw new InvalidTargetException("Target is out of reach");
+			}
+
+			//replace zombie with a new hero 
+			Game.map[x][y]= new CharacterCell(Game.availableHeroes.get(0));
+			Game.heroes.add(Game.availableHeroes.remove(0));
 
 			//TODO:know if there is a zombie to cure in adjacent cells and do we have to set target
 		}
