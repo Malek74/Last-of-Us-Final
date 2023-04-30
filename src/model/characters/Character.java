@@ -127,6 +127,7 @@ public abstract class Character {
 	
 	public void onCharacterDeath(){
 	
+		//gets dead character location
 		int x=(int) location.getX();
 		int y=(int) location.getY();
 
