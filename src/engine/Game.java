@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.*;
 
+import java.util.random.*;
 import model.characters.Explorer;
 import model.characters.Fighter;
 import model.characters.Hero;
