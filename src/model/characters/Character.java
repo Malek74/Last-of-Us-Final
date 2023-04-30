@@ -130,12 +130,8 @@ public abstract class Character {
 		int x=(int) location.getX();
 		int y=(int) location.getY();
 
+		//removes dead character from map
 		Game.map[x][y]=null;
-
-		//checks if character is not instance of zombie he is removed from Heroes' pool
-		if(!(this instanceof Zombie)){
-			Game.heroes.remove(this);	
-		}
 		} 
 	
 	/*HELPER METHODS */

@@ -4,15 +4,16 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.awt.*;
 
 import java.util.Random.*;
-import model.characters.Explorer;
-import model.characters.Fighter;
-import model.characters.Hero;
-import model.characters.Medic;
-import model.characters.Zombie;
-import model.world.Cell;
+import model.characters.*;
+
+
+import model.collectibles.*;
+import model.world.*;
+
 
 public class Game {
 	
@@ -54,16 +55,17 @@ public class Game {
 		
 	}
 
-	private static Point randomPoint()
+	public static Point randomPoint()
 	{
 		Random rand = new Random();
 
-		int randomX = rand.nextInt(16);
-		int randomY = rand.nextInt(16);
+		int randomX = rand.nextInt(15);
+		int randomY = rand.nextInt(15);
+		//keeps generateing random x & y co-ordinates till he finds empty cell
 		while(map[randomX][randomY] != null)
 		{
-			randomX = rand.nextInt(16);
-			randomY = rand.nextInt(16);
+			randomX = rand.nextInt(15);
+			randomY = rand.nextInt(15);
 		}
 		return new Point(randomX,randomY);
 
@@ -93,7 +95,7 @@ public class Game {
 			for(int j = 0; j<2; j++){
 				Zombie zombie = new Zombie();
 				Point zombieLocation = randomPoint();
-				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = CharacterCell(zombie);
+				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = new CharacterCell(zombie);
 			}
 		}
 	}

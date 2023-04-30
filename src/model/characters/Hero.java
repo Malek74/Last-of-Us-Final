@@ -70,7 +70,16 @@ public abstract class Hero extends Character {
 			if(actionsAvailable==0){
 				throw new NotEnoughActionsException("No Enough Actions");
 			}
+			
 			super.attack();
+
+
+		}
+
+		//calls super method and removes Hero from Heroes' pool
+		public void onCharacterDeath(){
+			super.onCharacterDeath();
+			Game.heroes.remove(this);
 		}
 
 		public void move(Direction d) throws MovementException , NotEnoughActionsException{
@@ -81,8 +90,8 @@ public abstract class Hero extends Character {
 			//gets user x & y co-ordinates
 			int x=(int) this.getLocation().x;
 			int y=(int) this.getLocation().y;
-			
-			ArrayList<Cell> cells = this.getAdjacentCells(x,y);
+			int newX=x;
+			int newY=y;
 			
 			//handles the input from user and upgrades x & y co-ordinates if input movement is valid
 			switch (d){
@@ -90,36 +99,41 @@ public abstract class Hero extends Character {
 					throw new MovementException("Invalid Movement , Cannot move out of Border");
 				}
 				else{
-					y++;
+					newY++;
 				}
 				break;
 				case DOWN: if(y==0){
 					throw new MovementException("Invalid Movement , Cannot move out of Border");
 				}
 				else{
-					y--;
+					newY--;
 				}
 				break;
 				case LEFT:if(x==0){
 					throw new MovementException("Invalid Movement , Cannot move out of Border");
 				}
 				else{
-					x--;
+					newX--;
 				}
 				break;
 				case RIGHT:if(x==14){
 					throw new MovementException("Invalid Movement , Cannot move out of Border");
 				}
 				else{
-					x++;
+					newX++;
 				}
 				break;
 			}
+
+			
+			Game.map[x][y]=null;
+
+			//TODO:how to know cell is empty or when can hero move to cell
 			
 			//sets new user location
-			this.setLocation(new Point(x,y));
-			ArrayList<Cell> newCells= this.getAdjacentCells(x, y);
-			cells.addAll(newCells);
+			this.setLocation(new Point(newX,newY));
+			
+			ArrayList<Cell> cells=this.getAdjacentCells(newX, newY);
 			setMapVisbility(true, cells);
 		}
 		
