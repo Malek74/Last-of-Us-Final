@@ -1,104 +1,207 @@
-package engine;
+package model.characters;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.awt.Point;
 import java.util.ArrayList;
-import java.awt.*;
 
-import java.util.Random.*;
-import model.characters.Explorer;
-import model.characters.Fighter;
-import model.characters.Hero;
-import model.characters.Medic;
-import model.characters.Zombie;
+import exceptions.InvalidTargetException;
+import exceptions.MovementException;
+import exceptions.NoAvailableResourcesException;
+import exceptions.NotEnoughActionsException;
+import model.collectibles.Supply;
+import model.collectibles.Vaccine;
 import model.world.Cell;
+import engine.*;
 
-public class Game {
 
-	public static Cell[][] map;
-	public static ArrayList<Hero> availableHeroes = new ArrayList<Hero>();
-	public static ArrayList<Hero> heroes = new ArrayList<Hero>();
-	public static ArrayList<Zombie> zombies = new ArrayList<Zombie>();
+public abstract class Hero extends Character {
+	
 
-	public static void loadHeroes(String filePath) throws IOException {
+		private int actionsAvailable;
+		private int maxActions;
+		private ArrayList<Vaccine> vaccineInventory;
+		private ArrayList<Supply> supplyInventory;
+		private boolean specialAction;
+	
+		
+		public Hero(String name,int maxHp, int attackDmg, int maxActions) {
+			super(name,maxHp, attackDmg);
+			this.maxActions = maxActions;
+			this.actionsAvailable = maxActions;
+			this.vaccineInventory = new ArrayList<Vaccine>();
+			this.supplyInventory=new ArrayList<Supply>();
+			this.specialAction=false;
+		
+		}
 
-		BufferedReader br = new BufferedReader(new FileReader(filePath));
-		String line = br.readLine();
-		while (line != null) {
-			String[] content = line.split(",");
-			Hero hero = null;
-			switch (content[1]) {
-				case "FIGH":
-					hero = new Fighter(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]),
-							Integer.parseInt(content[3]));
-					break;
-				case "MED":
-					hero = new Medic(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]),
-							Integer.parseInt(content[3]));
-					break;
-				case "EXP":
-					hero = new Explorer(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]),
-							Integer.parseInt(content[3]));
-					break;
+		public boolean isSpecialAction() {
+			return specialAction;
+		}
+
+		public void setSpecialAction(boolean specialAction) {
+			this.specialAction = specialAction;
+		}
+
+		public int getActionsAvailable() {
+			return actionsAvailable;
+		}
+
+		public void setActionsAvailable(int actionsAvailable) {
+			this.actionsAvailable = actionsAvailable;
+		}
+
+		public int getMaxActions() {
+			return maxActions;
+		}
+
+		public ArrayList<Vaccine> getVaccineInventory() {
+			return vaccineInventory;
+		}
+
+		public ArrayList<Supply> getSupplyInventory() {
+			return supplyInventory;
+		}
+
+		public void attack() throws InvalidTargetException,NotEnoughActionsException{
+			if(!(this.getTarget() instanceof Zombie)){
+				throw new InvalidTargetException("Target is not a Zombie");
 			}
-			availableHeroes.add(hero);
-			line = br.readLine();
-
-		}
-		br.close();
-
-	}
-
-	private static Point randomPoint() {
-		Random rand = new Random();
-
-		int randomX = rand.nextInt(16);
-		int randomY = rand.nextInt(16);
-		while (map[randomX][randomY] != null) {
-			randomX = rand.nextInt(16);
-			randomY = rand.nextInt(16);
-		}
-		return new Point(randomX, randomY);
-
-	}
-
-	public static void startGame(Hero h) {
-		map = new Cell[15][15];
-		map[0][0] = new CharacterCell(h);
-		heroes.add(h);
-		availableHeroes.remove(h);
-		for (int i = 0; i < 5; i++) {
-			Vaccine vaccine = new Vaccine();
-			Point vaccinePoint = randomPoint();
-			map[(int) vaccinePoint.getX()][(int) vaccinePoint.getY()] = new CollectibleCell(vaccine);
-
-			TrapCell trap = new TrapCell();
-			Point trapPoint = randomPoint();
-			map[(int) trapPoint.getX()][(int) trapPoint.getY()] = trap;
-
-			Supply supply = new Supply();
-			Point supplyPoint = randomPoint();
-			map[(int) supplyPoint.getX()][(int) supplyPoint.getY()] = new CollectibleCell(supply);
-
-			for (int j = 0; j < 2; j++) {
-				Zombie zombie = new Zombie();
-				Point zombieLocation = randomPoint();
-				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = CharacterCell(zombie);
+			
+			
+			if(actionsAvailable==0){
+				throw new NotEnoughActionsException("No Enough Actions");
 			}
+			super.attack();
 		}
-	}
 
-	public static boolean checkWin() {
-		return heroes.size() == 5;
-	}
+		public void move(Direction d) throws MovementException , NotEnoughActionsException{
+			if(actionsAvailable==0){
+				throw new NotEnoughActionsException("No Actions left");
+			}
+			
+			//gets user x & y co-ordinates
+			int x=(int) this.getLocation().x;
+			int y=(int) this.getLocation().y;
+			
+			ArrayList<Cell> cells = this.getAdjacentCells(x,y);
+			
+			//handles the input from user and upgrades x & y co-ordinates if input movement is valid
+			switch (d){
+				case UP: if(y==14){
+					throw new MovementException("Invalid Movement , Cannot move out of Border");
+				}
+				else{
+					y++;
+				}
+				break;
+				case DOWN: if(y==0){
+					throw new MovementException("Invalid Movement , Cannot move out of Border");
+				}
+				else{
+					y--;
+				}
+				break;
+				case LEFT:if(x==0){
+					throw new MovementException("Invalid Movement , Cannot move out of Border");
+				}
+				else{
+					x--;
+				}
+				break;
+				case RIGHT:if(x==14){
+					throw new MovementException("Invalid Movement , Cannot move out of Border");
+				}
+				else{
+					x++;
+				}
+				break;
+			}
+			
+			//sets new user location
+			this.setLocation(new Point(x,y));
+			ArrayList<Cell> newCells= this.getAdjacentCells(x, y);
+			cells.addAll(newCells);
+			setMapVisbility(true, cells);
+		}
+		
+		public void useSpecial() throws NoAvailableResourcesException{
 
-	public static boolean checkGameOver() {
-		return heroes.size() == 0;
-	}
+			if(supplyInventory.size()==0){
+				throw new NoAvailableResourcesException("No supplies available to perform action");
+			}
 
-	public static void endTurn() {
+			//TODO:handle if special action is already activated 
+			supplyInventory.remove(supplyInventory.size()-1);
+			this.setSpecialAction(true);
 
-	}
+			
+		}
 
+		public void cure() throws NoAvailableResourcesException{
+			if(vaccineInventory.size()==0){
+				throw new NoAvailableResourcesException("No Vaccines available");
+			}
+			ArrayList<Cell> cells = new ArrayList<>();
+
+			//TODO:know if there is a zombie to cure in adjacent cells and do we have to set target
+		}
+		
+
+
+		/*HELPERS */
+		private ArrayList<Cell> getAdjacentCells(int x,int y){
+			ArrayList<Cell> adjacentCells= new ArrayList<Cell>();
+			
+	
+			try {
+				adjacentCells.add(Game.map[x-1][y+1]);
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+	
+			try {
+				adjacentCells.add(Game.map[x][y+1]);
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+			try {
+				adjacentCells.add(Game.map[x+1][y+1]);
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+			try {
+				adjacentCells.add(Game.map[x+1][y]);
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+			try {
+				adjacentCells.add(Game.map[x+1][y-1]);
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+	
+			try {
+				adjacentCells.add(Game.map[x][y-1]);
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+			try {
+				adjacentCells.add(Game.map[x-1][y-1]);
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+			try {
+				adjacentCells.add(Game.map[x-1][y]);
+			} catch (IndexOutOfBoundsException e) {
+				// TODO: handle exception
+			}
+				return adjacentCells;
+		}
+	
+		//sets visbility of selected list of cells (not all grid)
+		private static void setMapVisbility(boolean visbility,ArrayList<Cell>cells){
+		
+		for(int i=0;i<cells.size();i++){
+			cells.get(i).setVisible(visbility);
+		}
+}
 }
