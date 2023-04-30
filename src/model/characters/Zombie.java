@@ -23,8 +23,7 @@ public class Zombie extends Character {
 	//calls super method and spawns new zombie
 	public void onCharacterDeath(){
 		super.onCharacterDeath();
-		Point location = Game.randomPoint();
-		Game.map[(int) location.getX()][(int)location.getY()]= new CharacterCell(new Zombie());
+		Game.spawnZombie();
 
 	}
 

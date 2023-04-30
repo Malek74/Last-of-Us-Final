@@ -61,6 +61,7 @@ public class Game {
 
 		int randomX = rand.nextInt(15);
 		int randomY = rand.nextInt(15);
+
 		//keeps generateing random x & y co-ordinates till he finds empty cell
 		while(map[randomX][randomY] != null)
 		{
@@ -93,13 +94,20 @@ public class Game {
 			map[(int) supplyPoint.getX()][(int) supplyPoint.getY()] = new CollectibleCell(supply);
 
 			for(int j = 0; j<2; j++){
-				Zombie zombie = new Zombie();
-				Point zombieLocation = randomPoint();
-				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = new CharacterCell(zombie);
+				spawnZombie();
 			}
 		}
 	}
-
+	public static void main(String[] args) {
+	}
+	public static void check(Object o){
+		if( o instanceof Vaccine){
+			System.out.println("YES");
+		}
+		else{
+			System.out.println("NO");
+		}
+	}
 	public static boolean checkWin()
 	{
 		return heroes.size() == 5;
@@ -113,6 +121,12 @@ public class Game {
 	public static void endTurn()
 	{
 		
+	}
+
+	/*HELPERS*/
+	public static void spawnZombie(){
+		Point location = Game.randomPoint();
+		Game.map[(int) location.getX()][(int)location.getY()]= new CharacterCell(new Zombie());
 	}
 
 

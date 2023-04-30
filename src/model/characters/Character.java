@@ -4,11 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import engine.Game;
-import model.collectibles.Collectible;
-import model.collectibles.Supply;
 import model.world.Cell;
 import model.world.CharacterCell;
-import model.world.CollectibleCell;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
@@ -135,10 +132,12 @@ public abstract class Character {
 		Game.map[x][y]=null;
 		} 
 	
+
+
 	/*HELPER METHODS */
 
 	//gets all cells adjacent to character's location
-	private   ArrayList<Cell> getAdjacentCells(){
+	public ArrayList<Cell> getAdjacentCells(){
 		ArrayList<Cell> adjacentCells= new ArrayList<Cell>();
 		int x=(int) location.getX();
 		int y= (int) location.getY();

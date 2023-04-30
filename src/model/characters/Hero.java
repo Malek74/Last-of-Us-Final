@@ -133,7 +133,7 @@ public abstract class Hero extends Character {
 			//sets new user location
 			this.setLocation(new Point(newX,newY));
 			
-			ArrayList<Cell> cells=this.getAdjacentCells(newX, newY);
+			ArrayList<Cell> cells=this.getAdjacentCells();
 			setMapVisbility(true, cells);
 		}
 		
@@ -146,15 +146,18 @@ public abstract class Hero extends Character {
 			//TODO:handle if special action is already activated 
 			supplyInventory.remove(supplyInventory.size()-1);
 			this.setSpecialAction(true);
-
-			
 		}
 
-		public void cure() throws NoAvailableResourcesException{
+		public void cure() throws NoAvailableResourcesException, InvalidTargetException{
 			if(vaccineInventory.size()==0){
 				throw new NoAvailableResourcesException("No Vaccines available");
 			}
-			ArrayList<Cell> cells = new ArrayList<>();
+
+			if(!(this.getTarget() instanceof Zombie)){
+				throw new InvalidTargetException("Target is not a Zombie");
+			}
+			ArrayList<Cell> cells = this.ge
+			
 
 			//TODO:know if there is a zombie to cure in adjacent cells and do we have to set target
 		}
@@ -162,55 +165,7 @@ public abstract class Hero extends Character {
 
 
 		/*HELPERS */
-		private ArrayList<Cell> getAdjacentCells(int x,int y){
-			ArrayList<Cell> adjacentCells= new ArrayList<Cell>();
-			
-	
-			try {
-				adjacentCells.add(Game.map[x-1][y+1]);
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
-	
-			try {
-				adjacentCells.add(Game.map[x][y+1]);
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
-			try {
-				adjacentCells.add(Game.map[x+1][y+1]);
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
-			try {
-				adjacentCells.add(Game.map[x+1][y]);
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
-			try {
-				adjacentCells.add(Game.map[x+1][y-1]);
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
-	
-			try {
-				adjacentCells.add(Game.map[x][y-1]);
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
-			try {
-				adjacentCells.add(Game.map[x-1][y-1]);
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
-			try {
-				adjacentCells.add(Game.map[x-1][y]);
-			} catch (IndexOutOfBoundsException e) {
-				// TODO: handle exception
-			}
-				return adjacentCells;
-		}
-	
+		
 		//sets visbility of selected list of cells (not all grid)
 		private static void setMapVisbility(boolean visbility,ArrayList<Cell>cells){
 		
