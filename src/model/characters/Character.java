@@ -28,20 +28,13 @@ public abstract class Character {
 		f.setLocation(new Point(0, 0));
 		z.setLocation(new Point(0, 1));
 		z1.setLocation(new Point(1, 0));
-		Game.map[0][0]= new CharacterCell(f);
+		Game.startGame(f);
 		Game.map[0][1]= new CharacterCell(z);
 		Game.map[1][0]= new CharacterCell(z1);
-		f.setTarget(z);
-		System.out.println(Game.map[0][4]);
-		System.out.println("--------------------------------------------");
-		System.out.println(Game.map[0][0]);
-		System.out.println(Game.map[0][1]);
-		System.out.println("--------------------------------------------");
-		f.attack();
-		System.out.println(Game.map[0][0]);
-		System.out.println(Game.map[0][1]);
-		System.out.println("--------------------------------------------");
-		System.out.println(f.getCurrentHp());
+
+		CharacterCell cell = (CharacterCell)Game.map[0][0];
+		System.out.println(cell.getCharacter() instanceof Medic?"Yes":"No");
+
 	}
 
 	
@@ -133,9 +126,7 @@ public abstract class Character {
 		} 
 	
 
-
 	/*HELPER METHODS */
-
 	//gets all cells adjacent to character's location
 	public ArrayList<Cell> getAdjacentCells(){
 		ArrayList<Cell> adjacentCells= new ArrayList<Cell>();
