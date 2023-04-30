@@ -7,7 +7,10 @@ import java.util.ArrayList;
 import java.awt.*;
 
 import java.util.Random;
+
+import exceptions.InvalidTargetException;
 import model.characters.*;
+import model.characters.Character;
 import model.collectibles.*;
 import model.world.Cell;
 import model.world.CharacterCell;
@@ -108,8 +111,36 @@ public class Game {
 		return heroes.size() == 0;
 	}
 
+	private static void zombiesAttackAdjacentCells()
+	{
+		int i = 0;
+		while(heroes.get(i) != null)
+		{
+			ArrayList <Cell> adjacent = heroes.get(i).getAdjacentCells();
+			for (int j = 0; j<adjacent.size(); j++)
+			{
+				CharacterCell adjacentCharacterCell = (CharacterCell) adjacent.get(j);
+				Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
+				if(adjacentCharacter instanceof Zombie)
+				{
+					Zombie adjacentZombie = (Zombie)adjacentCharacter;
+					try{
+					adjacentZombie.attack();
+					} catch(InvalidTargetException e){
+						//handeling exceptions
+					}
+
+					//QUESTION: should this method continue if there are more than one zombie in the adjacent cells?
+					//break;
+				}											
+			}
+			i++;
+		}
+	}
+
 	public static void endTurn()
 	{
+
 		
 	}
 

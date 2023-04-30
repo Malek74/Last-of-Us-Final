@@ -138,7 +138,7 @@ public abstract class Character {
 	/*HELPER METHODS */
 
 	//gets all cells adjacent to character's location
-	private   ArrayList<Cell> getAdjacentCells(){
+	public   ArrayList<Cell> getAdjacentCells(){
 		ArrayList<Cell> adjacentCells= new ArrayList<Cell>();
 		int x=(int) location.getX();
 		int y= (int) location.getY();
