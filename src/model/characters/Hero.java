@@ -1,76 +1,104 @@
-package model.characters;
+package engine;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import model.collectibles.Supply;
-import model.collectibles.Vaccine;
+import java.awt.*;
 
+import java.util.Random.*;
+import model.characters.Explorer;
+import model.characters.Fighter;
+import model.characters.Hero;
+import model.characters.Medic;
+import model.characters.Zombie;
+import model.world.Cell;
 
-public abstract class Hero extends Character {
-	
+public class Game {
 
-		private int actionsAvailable;
-		private int maxActions;
-		private ArrayList<Vaccine> vaccineInventory;
-		private ArrayList<Supply> supplyInventory;
-		private boolean specialAction;
-	
-		
-		public Hero(String name,int maxHp, int attackDmg, int maxActions) {
-			super(name,maxHp, attackDmg);
-			this.maxActions = maxActions;
-			this.actionsAvailable = maxActions;
-			this.vaccineInventory = new ArrayList<Vaccine>();
-			this.supplyInventory=new ArrayList<Supply>();
-			this.specialAction=false;
-		
+	public static Cell[][] map;
+	public static ArrayList<Hero> availableHeroes = new ArrayList<Hero>();
+	public static ArrayList<Hero> heroes = new ArrayList<Hero>();
+	public static ArrayList<Zombie> zombies = new ArrayList<Zombie>();
+
+	public static void loadHeroes(String filePath) throws IOException {
+
+		BufferedReader br = new BufferedReader(new FileReader(filePath));
+		String line = br.readLine();
+		while (line != null) {
+			String[] content = line.split(",");
+			Hero hero = null;
+			switch (content[1]) {
+				case "FIGH":
+					hero = new Fighter(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]),
+							Integer.parseInt(content[3]));
+					break;
+				case "MED":
+					hero = new Medic(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]),
+							Integer.parseInt(content[3]));
+					break;
+				case "EXP":
+					hero = new Explorer(content[0], Integer.parseInt(content[2]), Integer.parseInt(content[4]),
+							Integer.parseInt(content[3]));
+					break;
+			}
+			availableHeroes.add(hero);
+			line = br.readLine();
+
 		}
+		br.close();
 
-		
-	
+	}
 
+	private static Point randomPoint() {
+		Random rand = new Random();
 
-		public boolean isSpecialAction() {
-			return specialAction;
+		int randomX = rand.nextInt(16);
+		int randomY = rand.nextInt(16);
+		while (map[randomX][randomY] != null) {
+			randomX = rand.nextInt(16);
+			randomY = rand.nextInt(16);
 		}
+		return new Point(randomX, randomY);
 
+	}
 
+	public static void startGame(Hero h) {
+		map = new Cell[15][15];
+		map[0][0] = new CharacterCell(h);
+		heroes.add(h);
+		availableHeroes.remove(h);
+		for (int i = 0; i < 5; i++) {
+			Vaccine vaccine = new Vaccine();
+			Point vaccinePoint = randomPoint();
+			map[(int) vaccinePoint.getX()][(int) vaccinePoint.getY()] = new CollectibleCell(vaccine);
 
-		public void setSpecialAction(boolean specialAction) {
-			this.specialAction = specialAction;
+			TrapCell trap = new TrapCell();
+			Point trapPoint = randomPoint();
+			map[(int) trapPoint.getX()][(int) trapPoint.getY()] = trap;
+
+			Supply supply = new Supply();
+			Point supplyPoint = randomPoint();
+			map[(int) supplyPoint.getX()][(int) supplyPoint.getY()] = new CollectibleCell(supply);
+
+			for (int j = 0; j < 2; j++) {
+				Zombie zombie = new Zombie();
+				Point zombieLocation = randomPoint();
+				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = CharacterCell(zombie);
+			}
 		}
+	}
 
+	public static boolean checkWin() {
+		return heroes.size() == 5;
+	}
 
+	public static boolean checkGameOver() {
+		return heroes.size() == 0;
+	}
 
-		public int getActionsAvailable() {
-			return actionsAvailable;
-		}
+	public static void endTurn() {
 
+	}
 
-
-		public void setActionsAvailable(int actionsAvailable) {
-			this.actionsAvailable = actionsAvailable;
-		}
-
-
-
-		public int getMaxActions() {
-			return maxActions;
-		}
-
-
-
-		public ArrayList<Vaccine> getVaccineInventory() {
-			return vaccineInventory;
-		}
-
-
-		public ArrayList<Supply> getSupplyInventory() {
-			return supplyInventory;
-		}
-
-
-
-		
-
-	
 }
