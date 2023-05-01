@@ -25,6 +25,8 @@ public class Zombie extends Character {
 		super.onCharacterDeath();
 		Game.spawnZombie();
 
+		Game.zombies.remove(this);
+
 	}
 
 }

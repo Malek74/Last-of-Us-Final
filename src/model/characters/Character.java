@@ -189,7 +189,7 @@ public abstract class Character {
 	}
 
 	//sets visbility of all map
-	private static void setMapVisbility(boolean visbility){
+	public static void setMapVisbility(boolean visbility){
 		for(int i=0;i<15;i++){
 			for(int j=0;j<15;j++){
 				Game.map[i][j].setVisible(visbility);
@@ -198,7 +198,7 @@ public abstract class Character {
 	}
 
 	//sets visbility of selected list of cells (not all grid)
-	private static void setMapVisbility(boolean visbility,ArrayList<Cell>cells){
+	public static void setMapVisbility(boolean visbility,ArrayList<Cell>cells){
 		
 		for(int i=0;i<cells.size();i++){
 			cells.get(i).setVisible(visbility);

@@ -135,7 +135,7 @@ public abstract class Hero extends Character {
 			this.setLocation(new Point(newX,newY));
 			
 			ArrayList<Cell> cells=this.getAdjacentCells();
-			setMapVisbility(true, cells);
+			super.setMapVisbility(true, cells);
 		}
 		
 		public void useSpecial() throws NoAvailableResourcesException{
@@ -181,10 +181,7 @@ public abstract class Hero extends Character {
 		/*HELPERS */
 		
 		//sets visbility of selected list of cells (not all grid)
-		private static void setMapVisbility(boolean visbility,ArrayList<Cell>cells){
 		
-		for(int i=0;i<cells.size();i++){
-			cells.get(i).setVisible(visbility);
-		}
 }
-}
+		
+
