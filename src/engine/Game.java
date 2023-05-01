@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.NotActiveException;
 import java.util.ArrayList;
+import java.util.Queue;
 import java.util.Random;
 import java.awt.*;
 
@@ -64,6 +65,27 @@ public class Game {
 		
 		
 	}
+	public static ArrayList<Point> randomPoint()
+	{
+		ArrayList <Point> emptyCells= new ArrayList<>();
+		Random rand = new Random();
+
+		int randomX = rand.nextInt(15);
+		int randomY = rand.nextInt(15);
+
+		//keeps generateing random x & y co-ordinates till he finds empty cell
+		CharacterCell cell = (CharacterCell) map[randomX][randomY] ;
+		for(int i=0;i<15;i++){
+			while(!(cell.getCharacter()==null)){
+			randomX = rand.nextInt(15);
+			randomY = rand.nextInt(15);
+			}
+			emptyCells.add(new Point(randomX,randomY));
+		}
+		return emptyCells;
+
+	}
+
 
 	public static Point characterRandomPoint()
 	{
@@ -77,7 +99,7 @@ public class Game {
 		while(!found){
 			try {
 				CharacterCell cell = (CharacterCell) (map[randomX][randomY]);
-				while(!(cell.getCharacter().equals(null))){
+				while(!(cell.getCharacter()==null)){
 				randomX = rand.nextInt(15);
 				randomY = rand.nextInt(15);
 				}
@@ -108,24 +130,6 @@ public class Game {
 		h.setLocation(new Point(0, 0));
 		heroes.add(h);
 		availableHeroes.remove(h);
-		for(int i = 0; i < 5; i++)
-		{
-			Vaccine vaccine = new Vaccine();
-			Point vaccinePoint = randomPoint();
-			map[(int) vaccinePoint.getX()][(int) vaccinePoint.getY()] = new CollectibleCell(vaccine);
-
-			TrapCell trap = new TrapCell();
-			Point trapPoint =  randomPoint();
-			map[(int) trapPoint.getX()][(int) trapPoint.getY()] = trap;
-
-			Supply supply = new Supply();
-			Point supplyPoint = randomPoint();
-			map[(int) supplyPoint.getX()][(int) supplyPoint.getY()] = new CollectibleCell(supply);
-
-			for(int j = 0; j<2; j++){
-				spawnZombie();
-			}
-		}
 
 		//loop that makes every cell that isnt occupied by anything a CharacterCell
 		for(int hor = 0; hor<map.length; hor++)
@@ -137,6 +141,17 @@ public class Game {
 				}
 			}
 		}
+		ArrayList<Point> cells = randomPoint();
+		for(int i=0;i<5;i++){
+			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new CollectibleCell(new Vaccine());
+			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new CollectibleCell(new Supply());
+			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new TrapCell();
+
+			cells.remove(0);
+			cells.remove(0);
+			cells.remove(0);
+		}
+		
 	}
 
 	public static boolean checkWin()
