@@ -4,8 +4,11 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import engine.Game;
+import model.collectibles.Collectible;
+import model.collectibles.Supply;
 import model.world.Cell;
 import model.world.CharacterCell;
+import model.world.CollectibleCell;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
@@ -28,13 +31,20 @@ public abstract class Character {
 		f.setLocation(new Point(0, 0));
 		z.setLocation(new Point(0, 1));
 		z1.setLocation(new Point(1, 0));
-		Game.startGame(f);
+		Game.map[0][0]= new CharacterCell(f);
 		Game.map[0][1]= new CharacterCell(z);
 		Game.map[1][0]= new CharacterCell(z1);
-
-		CharacterCell cell = (CharacterCell)Game.map[0][0];
-		System.out.println(cell.getCharacter() instanceof Medic?"Yes":"No");
-
+		f.setTarget(z);
+		System.out.println(Game.map[0][4]);
+		System.out.println("--------------------------------------------");
+		System.out.println(Game.map[0][0]);
+		System.out.println(Game.map[0][1]);
+		System.out.println("--------------------------------------------");
+		f.attack();
+		System.out.println(Game.map[0][0]);
+		System.out.println(Game.map[0][1]);
+		System.out.println("--------------------------------------------");
+		System.out.println(f.getCurrentHp());
 	}
 
 	
@@ -125,11 +135,10 @@ public abstract class Character {
 		Game.map[x][y]=null;
 		} 
 	
-
 	/*HELPER METHODS */
-	
+
 	//gets all cells adjacent to character's location
-	public ArrayList<Cell> getAdjacentCells(){
+	public   ArrayList<Cell> getAdjacentCells(){
 		ArrayList<Cell> adjacentCells= new ArrayList<Cell>();
 		int x=(int) location.getX();
 		int y= (int) location.getY();
