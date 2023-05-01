@@ -6,13 +6,25 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.awt.*;
 
+<<<<<<< HEAD
 import java.util.random.*;
 import model.characters.Explorer;
 import model.characters.Fighter;
 import model.characters.Hero;
 import model.characters.Medic;
 import model.characters.Zombie;
+=======
+import java.util.Random;
+
+import exceptions.InvalidTargetException;
+import model.characters.*;
+import model.characters.Character;
+import model.collectibles.*;
+>>>>>>> d3ebb2600ac9350620a64cd16746383d82ad8536
 import model.world.Cell;
+import model.world.CharacterCell;
+import model.world.CollectibleCell;
+import model.world.TrapCell;
 
 public class Game {
 	
@@ -93,7 +105,11 @@ public class Game {
 			for(int j = 0; j<2; j++){
 				Zombie zombie = new Zombie();
 				Point zombieLocation = randomPoint();
+<<<<<<< HEAD
 				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = CharacterCell(zombie);
+=======
+				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = new CharacterCell(zombie);
+>>>>>>> d3ebb2600ac9350620a64cd16746383d82ad8536
 			}
 		}
 	}
@@ -108,8 +124,41 @@ public class Game {
 		return heroes.size() == 0;
 	}
 
+<<<<<<< HEAD
 	public static void endTurn()
 	{
+=======
+	private static void zombiesAttackAdjacentCells()
+	{
+		int i = 0;
+		while(heroes.get(i) != null)
+		{
+			ArrayList <Cell> adjacent = heroes.get(i).getAdjacentCells();
+			for (int j = 0; j<adjacent.size(); j++)
+			{
+				CharacterCell adjacentCharacterCell = (CharacterCell) adjacent.get(j);
+				Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
+				if(adjacentCharacter instanceof Zombie)
+				{
+					Zombie adjacentZombie = (Zombie)adjacentCharacter;
+					try{
+					adjacentZombie.attack();
+					} catch(InvalidTargetException e){
+						//handeling exceptions
+					}
+
+					//QUESTION: should this method continue if there are more than one zombie in the adjacent cells?
+					//break;
+				}											
+			}
+			i++;
+		}
+	}
+
+	public static void endTurn()
+	{
+
+>>>>>>> d3ebb2600ac9350620a64cd16746383d82ad8536
 		
 	}
 
