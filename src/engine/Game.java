@@ -121,7 +121,7 @@ public class Game {
 
 	public static boolean checkWin()
 	{
-		return heroes.size() >= 5 && vaccinesCollected == 5;
+		return heroes.size() >= 5 && Vaccine.vaccinesCollected == 5;
 	}
 
 	public static boolean checkGameOver()
@@ -141,7 +141,7 @@ public class Game {
 			{
 				CharacterCell adjacentCharacterCell = (CharacterCell) adjacentToZombie.get(j);
 				Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
-				if(adjacentCharacter instanceof Character)
+				if(adjacentCharacter instanceof Hero)
 				{
 					try{
 						currZombie.setTarget(adjacentCharacter);
