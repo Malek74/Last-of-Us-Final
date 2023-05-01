@@ -9,8 +9,7 @@ import java.awt.*;
 
 import java.util.Random.*;
 import model.characters.*;
-
-
+import model.characters.Character;
 import model.collectibles.*;
 import model.world.*;
 
@@ -94,20 +93,13 @@ public class Game {
 			map[(int) supplyPoint.getX()][(int) supplyPoint.getY()] = new CollectibleCell(supply);
 
 			for(int j = 0; j<2; j++){
-				spawnZombie();
+				Zombie zombie = new Zombie();
+				Point zombieLocation = randomPoint();
+				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = new CharacterCell(zombie);
 			}
 		}
 	}
-	public static void main(String[] args) {
-	}
-	public static void check(Object o){
-		if( o instanceof Vaccine){
-			System.out.println("YES");
-		}
-		else{
-			System.out.println("NO");
-		}
-	}
+
 	public static boolean checkWin()
 	{
 		return heroes.size() == 5;
@@ -118,15 +110,37 @@ public class Game {
 		return heroes.size() == 0;
 	}
 
-	public static void endTurn()
+	private static void zombiesAttackAdjacentCells ()
 	{
-		
+		int i = 0;
+		while(heroes.get(i) != null)
+		{
+			ArrayList <Cell> adjacent = heroes.get(i).getAdjacentCells();
+			for (int j = 0; j<adjacent.size(); j++)
+			{
+				CharacterCell adjacentCharacterCell = (CharacterCell) adjacent.get(j);
+				Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
+				if(adjacentCharacter instanceof Zombie)
+				{
+					Zombie adjacentZombie = (Zombie)adjacentCharacter;
+					try{
+					adjacentZombie.attack();
+					} catch(InvalidTargetException e){
+						//handeling exceptions
+					}
+
+					//QUESTION: should this method continue if there are more than one zombie in the adjacent cells?
+					//break;
+				}											
+			}
+			i++;
+		}
 	}
 
-	/*HELPERS*/
-	public static void spawnZombie(){
-		Point location = Game.randomPoint();
-		Game.map[(int) location.getX()][(int)location.getY()]= new CharacterCell(new Zombie());
+	public static void endTurn()
+	{
+
+		
 	}
 
 
