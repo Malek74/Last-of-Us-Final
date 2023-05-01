@@ -3,11 +3,15 @@ package engine;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.NotActiveException;
 import java.util.ArrayList;
 import java.util.Random;
 import java.awt.*;
 
 import java.util.Random.*;
+
+import exceptions.InvalidTargetException;
+import exceptions.NotEnoughActionsException;
 import model.characters.*;
 import model.characters.Character;
 import model.collectibles.*;
@@ -71,6 +75,13 @@ public class Game {
 
 	}
 
+	public static void spawnZombie()
+	{
+		Zombie zombie = new Zombie();
+		zombie.setLocation(randomPoint());
+		map[(int) zombie.getLocation().getX()][(int) zombie.getLocation().getY()] = new CharacterCell(zombie);
+	}
+
 
 	public static void startGame (Hero h)
 	{
@@ -93,16 +104,24 @@ public class Game {
 			map[(int) supplyPoint.getX()][(int) supplyPoint.getY()] = new CollectibleCell(supply);
 
 			for(int j = 0; j<2; j++){
-				Zombie zombie = new Zombie();
-				Point zombieLocation = randomPoint();
-				map[(int) zombieLocation.getX()][(int) zombieLocation.getY()] = new CharacterCell(zombie);
+				spawnZombie();
+			}
+		}
+		//loop that makes every cell that isnt occupied by anything a CharacterCell
+		for(int hor = 0; hor<map.length; hor++)
+		{
+			for(int ver = 0; ver<map.length; ver++){
+				if(map[hor][ver] == null)
+				{
+					map[hor][ver] = new CharacterCell(null);
+				}
 			}
 		}
 	}
 
 	public static boolean checkWin()
 	{
-		return heroes.size() == 5;
+		return heroes.size() >= 5 && vaccinesCollected == 5;
 	}
 
 	public static boolean checkGameOver()
@@ -110,35 +129,54 @@ public class Game {
 		return heroes.size() == 0;
 	}
 
-	private static void zombiesAttackAdjacentCells ()
+	private static void zombiesAttackAdjacentCells()
 	{
+		//checks the adjacent cells to each zombie on the map and the first hero adjacent to a zombie is attacked
 		int i = 0;
-		while(heroes.get(i) != null)
+		while(zombies.get(i) != null)
 		{
-			ArrayList <Cell> adjacent = heroes.get(i).getAdjacentCells();
-			for (int j = 0; j<adjacent.size(); j++)
+			Zombie currZombie = zombies.get(i);
+			ArrayList <Cell> adjacentToZombie = currZombie.getAdjacentCells();
+			for (int j = 0; j<adjacentToZombie.size(); j++)
 			{
-				CharacterCell adjacentCharacterCell = (CharacterCell) adjacent.get(j);
+				CharacterCell adjacentCharacterCell = (CharacterCell) adjacentToZombie.get(j);
 				Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
-				if(adjacentCharacter instanceof Zombie)
+				if(adjacentCharacter instanceof Character)
 				{
-					Zombie adjacentZombie = (Zombie)adjacentCharacter;
 					try{
-					adjacentZombie.attack();
-					} catch(InvalidTargetException e){
-						//handeling exceptions
-					}
-
-					//QUESTION: should this method continue if there are more than one zombie in the adjacent cells?
-					//break;
+						currZombie.setTarget(adjacentCharacter);
+						currZombie.attack();
+					} catch(Exception e){}	
+					break;
 				}											
 			}
 			i++;
 		}
 	}
 
+	private static void resetHeroes()
+	{
+		int heroCount = 0;
+		while(heroes.get(heroCount) != null)
+		{
+			Hero currHero = heroes.get(heroCount);
+			currHero.setActionsAvailable(currHero.getMaxActions());
+			currHero.setTarget(null);
+			currHero.setSpecialAction(false);
+			ArrayList<Cell> adjacent = currHero.getAdjacentCells();
+			for(int i = 0; i<adjacent.size(); i++)
+			{
+				adjacent.get(i).setVisible(true);
+			}
+			
+		}
+	}
+
 	public static void endTurn()
 	{
+		zombiesAttackAdjacentCells();
+		resetHeroes();
+		spawnZombie();
 
 		
 	}
