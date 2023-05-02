@@ -65,6 +65,112 @@ public class Game {
 		
 		
 	}
+
+	public static void startGame (Hero h)
+	{
+		map = new Cell[15][15];
+		map[0][0] = new CharacterCell(h);
+		h.setLocation(new Point(0, 0));
+		heroes.add(h);
+		availableHeroes.remove(h);
+
+		//loop that makes every cell that isnt occupied by anything a CharacterCell
+		for(int hor = 0; hor<map.length; hor++)
+		{
+			for(int ver = 0; ver<map.length; ver++){
+				if(map[hor][ver] == null)
+				{
+					map[hor][ver] = new CharacterCell(null);
+				}
+			}
+		}
+		ArrayList<Point> cells = randomPoint();
+		System.out.println(cells);
+		for(int i=0;i<5;i++){
+			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new CollectibleCell(new Vaccine());
+			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new CollectibleCell(new Supply());
+			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new TrapCell();
+
+			cells.remove(0);
+			cells.remove(0);
+			cells.remove(0);
+		}
+		
+	}
+
+
+
+
+
+
+
+	//QUESTION: should i throw or try catch exceptions
+	public static void endTurn() throws InvalidTargetException, NotEnoughActionsException
+	{
+		zombiesAttackAdjacentCells();
+		resetHeroes();
+		spawnZombie();
+
+	}
+
+	//**HELPER METHODS**
+
+	//endTurn helpers:
+
+	private static void resetHeroes()
+	{
+		
+		
+		for(int i=0;i<heroes.size();i++){
+			Hero currHero = heroes.get(i);
+			currHero.setActionsAvailable(currHero.getMaxActions());
+			currHero.setTarget(null);
+			currHero.setSpecialAction(false);
+			ArrayList<Cell> adjacent = currHero.getAdjacentCells();
+			
+			Character.setMapVisbility(false);
+			for(int j = 0; j<adjacent.size(); j++)
+			{
+				adjacent.get(j).setVisible(true);
+			}
+			
+		}
+	}
+
+	private static void zombiesAttackAdjacentCells() throws InvalidTargetException, NotEnoughActionsException
+	{
+		//checks the adjacent cells to each zombie on the map and the first hero adjacent to a zombie is attacked
+		
+		for(int i =0;i<zombies.size();i++){
+			Zombie currZombie = zombies.get(i);
+			ArrayList <Cell> adjacentToZombie = currZombie.getAdjacentCells();
+			for (int j = 0; j<adjacentToZombie.size(); j++)
+			{
+				if(adjacentToZombie.get(j) instanceof CharacterCell){
+					CharacterCell adjacentCharacterCell = (CharacterCell) adjacentToZombie.get(j);
+					Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
+					if(adjacentCharacter instanceof Hero){
+						currZombie.setTarget(adjacentCharacter);
+						currZombie.attack();					
+				}	
+				}										
+			}
+			i++;
+		}
+	}
+
+	//Win or loss helpers:
+	public static boolean checkWin()
+	{
+		return heroes.size() >= 5 && Vaccine.vaccinesCollected == 5;
+	}
+
+	public static boolean checkGameOver()
+	{
+		return heroes.size() == 0;
+	}
+
+	//Random location spawners:
 	public static ArrayList<Point> randomPoint()
 	{
 		ArrayList <Point> emptyCells= new ArrayList<>();
@@ -76,7 +182,8 @@ public class Game {
 		//keeps generateing random x & y co-ordinates till he finds empty cell
 		CharacterCell cell = (CharacterCell) map[randomX][randomY] ;
 		for(int i=0;i<15;i++){
-			while(!(cell.getCharacter()==null)){
+			// comment
+			while(!(cell.getCharacter()==null) || (emptyCells.contains(new Point(randomX, randomY)))){
 			randomX = rand.nextInt(15);
 			randomY = rand.nextInt(15);
 			}
@@ -85,7 +192,6 @@ public class Game {
 		return emptyCells;
 
 	}
-
 
 	public static Point characterRandomPoint()
 	{
@@ -114,7 +220,7 @@ public class Game {
 
 	}
 
-
+	//zombie spawner:
 	public static void spawnZombie()
 	{
 		Zombie zombie = new Zombie();
@@ -123,98 +229,6 @@ public class Game {
 		map[(int) zombie.getLocation().getX()][(int) zombie.getLocation().getY()] = new CharacterCell(zombie);
 	}
 
-
-	public static void startGame (Hero h)
-	{
-		map = new Cell[15][15];
-		map[0][0] = new CharacterCell(h);
-		h.setLocation(new Point(0, 0));
-		heroes.add(h);
-		availableHeroes.remove(h);
-
-		//loop that makes every cell that isnt occupied by anything a CharacterCell
-		for(int hor = 0; hor<map.length; hor++)
-		{
-			for(int ver = 0; ver<map.length; ver++){
-				if(map[hor][ver] == null)
-				{
-					map[hor][ver] = new CharacterCell(null);
-				}
-			}
-		}
-		ArrayList<Point> cells = randomPoint();
-		for(int i=0;i<5;i++){
-			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new CollectibleCell(new Vaccine());
-			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new CollectibleCell(new Supply());
-			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new TrapCell();
-
-			cells.remove(0);
-			cells.remove(0);
-			cells.remove(0);
-		}
-		
-	}
-
-	public static boolean checkWin()
-	{
-		return heroes.size() >= 5 && Vaccine.vaccinesCollected == 5;
-	}
-
-	public static boolean checkGameOver()
-	{
-		return heroes.size() == 0;
-	}
-
-	private static void zombiesAttackAdjacentCells() throws InvalidTargetException, NotEnoughActionsException
-	{
-		//checks the adjacent cells to each zombie on the map and the first hero adjacent to a zombie is attacked
-		
-		for(int i =0;i<zombies.size();i++){
-			Zombie currZombie = zombies.get(i);
-			ArrayList <Cell> adjacentToZombie = currZombie.getAdjacentCells();
-			for (int j = 0; j<adjacentToZombie.size(); j++)
-			{
-				if(adjacentToZombie.get(j) instanceof CharacterCell){
-					CharacterCell adjacentCharacterCell = (CharacterCell) adjacentToZombie.get(j);
-					Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
-					if(adjacentCharacter instanceof Hero){
-						currZombie.setTarget(adjacentCharacter);
-						currZombie.attack();					
-				}	
-				}										
-			}
-			i++;
-		}
-	}
-
-	private static void resetHeroes()
-	{
-		
-		
-		for(int i=0;i<heroes.size();i++){
-			Hero currHero = heroes.get(i);
-			currHero.setActionsAvailable(currHero.getMaxActions());
-			currHero.setTarget(null);
-			currHero.setSpecialAction(false);
-			ArrayList<Cell> adjacent = currHero.getAdjacentCells();
-			
-			Character.setMapVisbility(false);
-			for(int j = 0; j<adjacent.size(); j++)
-			{
-				adjacent.get(j).setVisible(true);
-			}
-			
-		}
-	}
-
-	//QUESTION: should i throw or try catch exceptions
-	public static void endTurn() throws InvalidTargetException, NotEnoughActionsException
-	{
-		zombiesAttackAdjacentCells();
-		resetHeroes();
-		spawnZombie();
-
-	}
 
 
 }
