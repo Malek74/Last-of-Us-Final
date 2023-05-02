@@ -182,6 +182,7 @@ public class Game {
 		//keeps generateing random x & y co-ordinates till he finds empty cell
 		CharacterCell cell = (CharacterCell) map[randomX][randomY] ;
 		for(int i=0;i<15;i++){
+			// comment
 			while(!(cell.getCharacter()==null) || (emptyCells.contains(new Point(randomX, randomY)))){
 			randomX = rand.nextInt(15);
 			randomY = rand.nextInt(15);
