@@ -11,7 +11,7 @@ public class Zombie extends Character {
 	
 	public Zombie() {
 		super("Zombie " + ZOMBIES_COUNT, 40, 10);
-		ZOMBIES_COUNT++;
+		ZOMBIES_COUNT++;		
 	}
 
 	public void attack() throws InvalidTargetException,NotEnoughActionsException{

@@ -9,10 +9,10 @@ public class Explorer extends Hero {
 		super( name, maxHp,  attackDmg,  maxActions) ;	
 	}
 
+	
 	public void attack() throws InvalidTargetException, NotEnoughActionsException{
 		super.attack();
-		int actions= super.getActionsAvailable()-1;
-		super.setActionsAvailable(actions);
+		setActionsAvailable(getActionsAvailable()-1);
 		
 		}
 
