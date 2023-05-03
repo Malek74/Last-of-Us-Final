@@ -87,11 +87,10 @@ public class Game {
 		// spawn 5 vaccines , 5 supplies & 5 trap cells in random locations
 		for (int i = 0; i < 5; i++) {
 			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()] = new CollectibleCell(new Vaccine());
+			cells.remove(0);
 			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()] = new CollectibleCell(new Supply());
+			cells.remove(0);
 			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()] = new TrapCell();
-
-			cells.remove(0);
-			cells.remove(0);
 			cells.remove(0);
 		}
 
