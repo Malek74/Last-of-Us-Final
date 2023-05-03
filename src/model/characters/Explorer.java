@@ -1,6 +1,6 @@
 package model.characters;
 import exceptions.*;
-import engine.*;
+
 
 public class Explorer extends Hero {
 	

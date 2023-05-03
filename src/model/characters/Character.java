@@ -4,11 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import engine.Game;
-import model.collectibles.Collectible;
-import model.collectibles.Supply;
 import model.world.Cell;
 import model.world.CharacterCell;
-import model.world.CollectibleCell;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
@@ -112,12 +109,11 @@ public abstract class Character {
 		}
 
 
-		target.currentHp-=this.attackDmg;
-
-		//TODO: is sequence correct 
-		defend(target);
+		target.setCurrentHp(target.getCurrentHp()-getAttackDmg());
+		target.defend(this);
 
 		//removes attacked target (zombie) if he died
+		//TODO:call end onCharacterDeath only in endTurn() (OR setCurrentHp what kabeel said)  (Mesh hatfr2 w hat3di fel tests el mafrood )
 		if(target.currentHp<=0){
 			target.onCharacterDeath();
 		}
@@ -130,8 +126,9 @@ public abstract class Character {
 	}
 
 	//method allows attacked character to defend himself
+	//TODO: character parameter shouldn't be target (DONE)
 	public void defend(Character c) {
-		currentHp-=(c.getAttackDmg())/2;
+		c.setCurrentHp(c.getCurrentHp()-(getAttackDmg()/2));
 	}
 
 	//method that handles map and other variables when character dies

@@ -1,10 +1,7 @@
 package model.characters;
-import java.awt.Point;
 
 import engine.Game;
 import exceptions.*;
-import model.world.CharacterCell;
-
 
 public class Zombie extends Character {
 	static int ZOMBIES_COUNT = 1;
