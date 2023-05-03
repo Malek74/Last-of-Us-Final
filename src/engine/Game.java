@@ -88,11 +88,10 @@ public class Game {
 		System.out.println(cells);
 		for(int i=0;i<5;i++){
 			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new CollectibleCell(new Vaccine());
+			cells.remove(0);
 			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new CollectibleCell(new Supply());
+			cells.remove(0);
 			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()]= new TrapCell();
-
-			cells.remove(0);
-			cells.remove(0);
 			cells.remove(0);
 		}
 		
@@ -147,22 +146,21 @@ public class Game {
 			for (int j = 0; j<adjacentToZombie.size(); j++)
 			{
 				if(adjacentToZombie.get(j) instanceof CharacterCell){
-					CharacterCell adjacentCharacterCell = (CharacterCell) adjacentToZombie.get(j);
-					Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
+					CharacterCell adjacentCharacterCell = adjacentToZombie.get(j);
+					Character adjacentCharacter = adjacentCharacterCell.getCharacter();
 					if(adjacentCharacter instanceof Hero){
 						currZombie.setTarget(adjacentCharacter);
 						currZombie.attack();					
-				}	
+					}		
 				}										
 			}
-			i++;
 		}
 	}
 
 	//Win or loss helpers:
 	public static boolean checkWin()
 	{
-		return heroes.size() >= 5 && Vaccine.vaccinesCollected == 5;
+		return heroes.size() >= 5 && Vaccine.vaccinesUsed == 5;
 	}
 
 	public static boolean checkGameOver()
