@@ -25,6 +25,15 @@ public abstract class Hero extends Character {
 		private ArrayList<Supply> supplyInventory;
 		private boolean specialAction;
 	
+		public static void main(String[] args) throws MovementException, NotEnoughActionsException {
+			Fighter f = new Fighter("malek", 100, 10, 10);
+			Game.startGame(f);
+			Game.map[1][0]= new CollectibleCell(new Vaccine());
+			f.move(Direction.RIGHT);
+
+			
+			System.out.println( Game.map[0][1].isVisible());
+		}
 		
 		public Hero(String name,int maxHp, int attackDmg, int maxActions) {
 			super(name,maxHp, attackDmg);
@@ -96,7 +105,6 @@ public abstract class Hero extends Character {
 			int x=(int) this.getLocation().x;
 			int y=(int) this.getLocation().y;
 			
-
 			
 			//handles the input from user and gets new x & y co-ordinates if input movement is valid
 			Point newLocation= validMove(d, x, y);
@@ -105,27 +113,25 @@ public abstract class Hero extends Character {
 			Cell cell = Game.map[(int) newLocation.getX()][(int) newLocation.getY()];	
 			
 			//checks and handles if new cell is a trap cell
-			movedToTrap(cell);
+			movedToTrap(cell,newLocation) ;
 				
-			
-			
-			//checks and handles if new cell contains collectible
-			movedToCollectible(cell);
-			
 
+			//checks and handles if new cell contains collectible
+			movedToCollectible(cell,newLocation);
+			
+			
 			//checks and handles if new cell contains character 
 			if(movedToCharacter(cell)){
 				setLocation(newLocation);
 				Game.map[(int) newLocation.getX()][(int) newLocation.getY()]= new CharacterCell(this);
 			}
 			else{
+				if(!(cell instanceof TrapCell || cell instanceof CollectibleCell)){
 				throw new MovementException("Cannot move to a cell occupied by another character");
 			}
+		}
 
-			//sets new cell 
-			Game.map[(int) newLocation.getX()][(int) newLocation.getY()]= new CharacterCell(this);
-			setLocation(newLocation);
-
+			
 			//empties old cell
 			Game.map[x][y]= new CharacterCell(null);
 
@@ -137,8 +143,13 @@ public abstract class Hero extends Character {
 			//TODO: if user moves to supply cell he picks it up 
 			
 			//sets new cell's adjacent cells to be visible 
-			ArrayList<Cell> cells=this.getAdjacentCells();
+			ArrayList<Point> cells=this.getAdjacentCells();
 			super.setMapVisbility(true, cells);
+			
+
+			setActionsAvailable(getActionsAvailable()-1);
+			Game.map[(int)newLocation.getX()][(int)newLocation.getY()].setVisible(true);
+
 		}
 		
 		public void useSpecial() throws NoAvailableResourcesException{
@@ -153,7 +164,7 @@ public abstract class Hero extends Character {
 			//TODO:use Collectibles use
 		}
 
-		public void cure() throws NoAvailableResourcesException, InvalidTargetException{
+		public void cure() throws NoAvailableResourcesException, InvalidTargetException, NotEnoughActionsException{
 			//handles exception that hero has no vaccines
 			if(vaccineInventory.size()==0){
 				throw new NoAvailableResourcesException("No Vaccines available");
@@ -164,14 +175,20 @@ public abstract class Hero extends Character {
 				throw new InvalidTargetException("Target is not a Zombie");
 			}
 
-			ArrayList<Cell> adjacentCells = this.getAdjacentCells();
+			if(getActionsAvailable()<=0){
+				throw new NotEnoughActionsException("Not Enough action pts");
+			}
+
+			ArrayList<Point> adjacentCells = this.getAdjacentCells();
+
+			
 		
 			//gets co-ordinates of target
 			int x= (int) getTarget().getLocation().getX();
 			int y= (int) getTarget().getLocation().getY();
 
 			//check that target is within reach
-			if(!(adjacentCells.contains(Game.map[x][y]))){
+			if(!(adjacentCells.contains(getTarget().getLocation()))){
 				throw new InvalidTargetException("Target is out of reach");
 			}
 
@@ -179,27 +196,38 @@ public abstract class Hero extends Character {
 			Game.zombies.remove(getTarget());
 			Game.map[x][y]= new CharacterCell(Game.availableHeroes.get(0));
 			Game.heroes.add(Game.availableHeroes.remove(0));			
+
+			//TODO:use collectible interface
 		}
 		
 
 		/*HELPERS */
 
 		//checks if cell Hero moved into is Trap if so damage Hero
-		public void movedToTrap(Cell cell){
+		public void movedToTrap(Cell cell,Point newLocation){
 			if(cell instanceof TrapCell){
+				
+				//sets new cell
+				Game.map[(int) newLocation.getX()][(int) newLocation.getY()]= new CharacterCell(this);
+				setLocation(newLocation);
+
 				TrapCell trap = (TrapCell) cell;
 				setCurrentHp(getCurrentHp()-trap.getTrapDamage());
+
+				
 			}
 			
 		}
 
-		public void movedToCollectible(Cell cell){
+		public void movedToCollectible(Cell cell , Point newLocation){
 			if(cell instanceof CollectibleCell){
 				CollectibleCell collectible= (CollectibleCell) cell;
 				//TODO: use Collectible pickup
-
-
+				//sets new cell 
+				Game.map[(int) newLocation.getX()][(int) newLocation.getY()]= new CharacterCell(this);
+				setLocation(newLocation);
 			}
+
 		}
 
 		//checks if cell hero moves to has character 
@@ -249,8 +277,7 @@ public abstract class Hero extends Character {
 				}
 				break;
 			}
-			return new Point(newX, newY);
+			return new Point(newY, newX);
 		}
-
 }
 

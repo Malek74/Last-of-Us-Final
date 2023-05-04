@@ -26,4 +26,6 @@ public class Medic extends Hero {
 	private static void heal(Character c) {
 		c.setCurrentHp(c.getMaxHp());
 	}
+
+	
 }

@@ -15,28 +15,31 @@ import model.world.*;
 
 public class Game {
 
-	public static Cell[][] map;
+	public static Cell[][] map= new Cell[15][15];
 	public static ArrayList<Hero> availableHeroes = new ArrayList<Hero>();
 	public static ArrayList<Hero> heroes = new ArrayList<Hero>();
 	public static ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 
+	
 	public static void main(String[] args) throws InvalidTargetException, NotEnoughActionsException {
-		Fighter f = new Fighter("Gasser", 10, 10, 10);
-		startGame(f);
-		// f.setActionsAvailable(0);
-		// System.out.println(f.getActionsAvailable());
-		// endTurn();
-		System.out.println(zombies.size());
+		// Fighter f = new Fighter("Gasser", 10, 10, 10);
+		// startGame(f);
+		// // f.setActionsAvailable(0);
+		// // System.out.println(f.getActionsAvailable());
+		// // endTurn();
+		// System.out.println(zombies.size());
 
-		Zombie z = new Zombie();
-		z.setLocation(new Point(0, 1));
-		CharacterCell cell = (CharacterCell) Game.map[0][0];
-		System.out.println(cell.getCharacter().getName());
-		f.setTarget(z);
-		f.attack();
-		f.attack();
-		 cell = (CharacterCell) Game.map[0][0];
-		System.out.println(cell.getCharacter());
+		// Zombie z = new Zombie();
+		// z.setLocation(new Point(0, 1));
+		// CharacterCell cell = (CharacterCell) Game.map[0][0];
+		// System.out.println(cell.getCharacter().getName());
+		// f.setTarget(z);
+		// f.attack();
+		// f.attack();
+		//  cell = (CharacterCell) Game.map[0][0];
+		// System.out.println(cell.getCharacter());
+		// System.out.println(map[0].length);
+
 	}
 
 	public static void loadHeroes(String filePath) throws IOException {
@@ -71,6 +74,7 @@ public class Game {
 	public static void startGame(Hero h) {
 		map = new Cell[15][15];
 		map[0][0] = new CharacterCell(h);
+		map[0][0].setVisible(true);
 		h.setLocation(new Point(0, 0));
 		heroes.add(h);
 		availableHeroes.remove(h);
@@ -98,12 +102,14 @@ public class Game {
 		for (int i = 0; i < 10; i++) {
 			spawnZombie();
 		}
+		Character.setMapVisbility(true, h.getAdjacentCells());
 
 	}
 
 	// QUESTION: should i throw or try catch exceptions
 	public static void endTurn() throws InvalidTargetException, NotEnoughActionsException {
 		zombiesAttackAdjacentCells();
+		Character.setMapVisbility(false);
 		resetHeroes();
 		spawnZombie();
 
@@ -119,11 +125,10 @@ public class Game {
 			currHero.setActionsAvailable(currHero.getMaxActions());
 			currHero.setTarget(null);
 			currHero.setSpecialAction(false);
-			ArrayList<Cell> adjacent = currHero.getAdjacentCells();
+			ArrayList<Point> adjacent = currHero.getAdjacentCells();
 
-			Character.setMapVisbility(false);
 			for (int j = 0; j < adjacent.size(); j++) {
-				adjacent.get(j).setVisible(true);
+				Character.setMapVisbility(true, adjacent);
 			}
 
 		}
@@ -135,28 +140,52 @@ public class Game {
 
 		for (int i = 0; i < zombies.size(); i++) {
 			Zombie currZombie = zombies.get(i);
-			ArrayList<Cell> adjacentToZombie = currZombie.getAdjacentCells();
+			ArrayList<Point> adjacentToZombie = currZombie.getAdjacentCells();
 			for (int j = 0; j < adjacentToZombie.size(); j++) {
-				if (adjacentToZombie.get(j) instanceof CharacterCell) {
-					CharacterCell adjacentCharacterCell = (CharacterCell) adjacentToZombie.get(j);
+				if (map[(int)adjacentToZombie.get(j).getY()][(int)adjacentToZombie.get(j).getX()] instanceof CharacterCell) {
+					CharacterCell adjacentCharacterCell = (CharacterCell) map[(int)adjacentToZombie.get(j).getY()][(int)adjacentToZombie.get(j).getX()];
 					Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
 					if (adjacentCharacter instanceof Hero) {
 						currZombie.setTarget(adjacentCharacter);
 						currZombie.attack();
+						return;
 					}
 				}
-			}
-			i++;
+			}	
 		}
 	}
 
 	// Win or loss helpers:
 	public static boolean checkWin() {
-		return heroes.size() >= 5 && Vaccine.vaccinesCollected == 5;
+
+		//tests that all vaccines are collected
+		for(int i=0;i<15;i++){
+			for(int j=0;j<15;j++){
+				if(map[i][j] instanceof CollectibleCell){
+					CollectibleCell cell =  (CollectibleCell) map[i][j];
+					if(cell.getCollectible() instanceof Vaccine){
+						return false;
+					}
+				}
+			}
+		}
+
+		//checks that no hero has a vaccine in his inventory  
+		for(int i=0;i<heroes.size();i++){
+			if(heroes.get(i).getVaccineInventory().size()!=0){
+				return false;
+			}
+		}
+
+		if(heroes.size()<5){
+			return false;
+		}
+
+		return true;
 	}
 
 	public static boolean checkGameOver() {
-		return heroes.size() == 0;
+		return heroes.size() == 0 ;
 	}
 
 	// Random location spawners:
@@ -191,10 +220,13 @@ public class Game {
 		// keeps generateing random x & y co-ordinates till he finds empty cell
 		while (!found) {
 			try {
+				randomX = rand.nextInt(15);
+				randomY = rand.nextInt(15);
 				CharacterCell cell = (CharacterCell) (map[randomX][randomY]);
 				while (!(cell.getCharacter() == null)) {
 					randomX = rand.nextInt(15);
 					randomY = rand.nextInt(15);
+					cell = (CharacterCell) (map[randomX][randomY]);
 				}
 				found = true;
 			} catch (Exception e) {
