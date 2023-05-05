@@ -186,5 +186,6 @@ public abstract class Hero extends Character {
 		for(int i=0;i<cells.size();i++){
 			cells.get(i).setVisible(visbility);
 		}
+
 }
 }
