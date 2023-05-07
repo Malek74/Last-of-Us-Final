@@ -15,6 +15,7 @@ public class Zombie extends Character {
 		if(!(this.getTarget() instanceof Hero)){
 			throw new InvalidTargetException("Target is not a Hero");
 		}
+		super.attack();
 	}
 
 	//calls super method and spawns new zombie

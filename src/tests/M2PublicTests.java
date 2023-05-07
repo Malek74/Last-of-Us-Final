@@ -1047,7 +1047,7 @@ public class M2PublicTests {
 
 	}
 
-	@Test(/*timeout = 3000*/)
+	@Test(timeout = 3000)
 	public void testValidMoveUpdateNewCellDead() throws Exception {
 		int random = (int) (Math.random() * 1000);
 		String nameHero = "Fighter " + random;
@@ -1074,12 +1074,10 @@ public class M2PublicTests {
 					}
 				}
 			}
-			
 			m[4][4] = new CharacterCell((Character) character);
 
 			Method getLocation = character.getClass().getMethod("getLocation");
 			Method m3 = Class.forName(heroPath).getDeclaredMethod("move", Class.forName(directionPath));
-			
 			m3.invoke(character, Enum.valueOf((Class<Enum>) Class.forName(directionPath), "RIGHT"));
 			Cell newC = (CharacterCell) m[4][5];
 			Method getCharacter = newC.getClass().getMethod("getCharacter");
@@ -2118,7 +2116,7 @@ public class M2PublicTests {
 
 	}
 
-	@Test()
+	@Test(timeout = 1000)
 	public void testFighterSpecialActionResets() throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InstantiationException, InvocationTargetException {
 
@@ -2192,7 +2190,7 @@ public class M2PublicTests {
 		assertFalse("Special action should rest on end turn if it was previously activaed", check);
 	}
 
-	@Test(/*timeout = 1000*/)
+	@Test()
 	public void testZombieDeath() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
 			InstantiationException, InvocationTargetException {
 
@@ -2249,7 +2247,6 @@ public class M2PublicTests {
 		Method attackMethod = characterClass.getMethod("attack");
 		attackMethod.invoke(character1);
 
-		
 		boolean isDead = ((CharacterCell) tmpMap[1][1]).getCharacter() == null;
 		isDead = isDead && !((ArrayList<Zombie>) zombieField.get(gameClass)).contains(character2);
 		assertEquals("The Zombie is considered dead if it nolonger exists on the map and in the Zombies array ", isDead,
@@ -2311,7 +2308,7 @@ public class M2PublicTests {
 				actionsAvailable);
 	}
 
-	@Test(/* timeout = 1000*/)
+	@Test(timeout = 1000)
 	public void testFighterDefenseUpdatesCurrentHP() throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InstantiationException, InvocationTargetException {
 
@@ -2355,7 +2352,6 @@ public class M2PublicTests {
 		}
 
 		Method attackMethod = zombieClass.getMethod("attack");
-
 		attackMethod.invoke(character1);
 
 		Method getCurrentHpMethod = characterClass.getMethod("getCurrentHp");
@@ -4196,7 +4192,7 @@ public class M2PublicTests {
 		assertTrue("You should not win when starting the game!", !(boolean) m.invoke(null));
 	}
 
-	@Test()
+	@Test(timeout = 10000)
 	public void testWinGame() throws Exception {
 		resetGameStatics();
 		Field fd = Class.forName(gamePath).getDeclaredField("heroes");
@@ -5010,7 +5006,7 @@ public class M2PublicTests {
 		}
 	}
 
-	@Test(timeout = 10000)
+	@Test()
 	public void testEndTurnResetZombieTargetMany() throws Exception {
 		resetGameStatics();
 		Field fd = Class.forName(gamePath).getDeclaredField("zombies");

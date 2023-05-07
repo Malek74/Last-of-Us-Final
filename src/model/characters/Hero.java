@@ -143,23 +143,24 @@ public abstract class Hero extends Character {
 			//TODO: if user moves to supply cell he picks it up 
 			
 			//sets new cell's adjacent cells to be visible 
-			ArrayList<Point> cells=this.getAdjacentCells();
-			super.setMapVisbility(true, cells);
-			
-
-			setActionsAvailable(getActionsAvailable()-1);
-			Game.map[(int)newLocation.getX()][(int)newLocation.getY()].setVisible(true);
+			if(getCurrentHp()>0){
+				ArrayList<Point> cells=this.getAdjacentCells();
+				super.setMapVisbility(true, cells);
+				setActionsAvailable(getActionsAvailable()-1);
+				Game.map[(int)newLocation.getX()][(int)newLocation.getY()].setVisible(true);
+			}
 
 		}
 		
-		public void useSpecial() throws NoAvailableResourcesException{
+		public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException{
 
 			if(supplyInventory.size()==0){
 				throw new NoAvailableResourcesException("No supplies available to perform action");
 			}
 
+
 			//TODO:handle if special action is already activated  (Not Handled)
-			supplyInventory.remove(supplyInventory.size()-1);
+			supplyInventory.get(supplyInventory.size()-1).use(this);
 			this.setSpecialAction(true);
 			//TODO:use Collectibles use
 		}
@@ -181,23 +182,28 @@ public abstract class Hero extends Character {
 
 			ArrayList<Point> adjacentCells = this.getAdjacentCells();
 
-			
 		
 			//gets co-ordinates of target
 			int x= (int) getTarget().getLocation().getX();
 			int y= (int) getTarget().getLocation().getY();
 
+			
 			//check that target is within reach
 			if(!(adjacentCells.contains(getTarget().getLocation()))){
 				throw new InvalidTargetException("Target is out of reach");
 			}
+
+			//use vaccine
+			vaccineInventory.get(0).use(this);
 
 			//replace zombie with a new hero and remove hero from zombies list
 			Game.zombies.remove(getTarget());
 			Game.map[x][y]= new CharacterCell(Game.availableHeroes.get(0));
 			Game.heroes.add(Game.availableHeroes.remove(0));			
 
-			//TODO:use collectible interface
+
+			setActionsAvailable(getActionsAvailable()-1);
+
 		}
 		
 
@@ -222,7 +228,8 @@ public abstract class Hero extends Character {
 		public void movedToCollectible(Cell cell , Point newLocation){
 			if(cell instanceof CollectibleCell){
 				CollectibleCell collectible= (CollectibleCell) cell;
-				//TODO: use Collectible pickup
+				collectible.getCollectible().pickUp(this);
+
 				//sets new cell 
 				Game.map[(int) newLocation.getX()][(int) newLocation.getY()]= new CharacterCell(this);
 				setLocation(newLocation);

@@ -16,7 +16,7 @@ public class Explorer extends Hero {
 		
 		}
 
-		public void useSpecial() throws NoAvailableResourcesException{
+		public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException{
 			super.useSpecial();
 			Character.setMapVisbility(true);
 			

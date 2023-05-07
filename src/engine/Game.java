@@ -112,6 +112,8 @@ public class Game {
 		Character.setMapVisbility(false);
 		resetHeroes();
 		spawnZombie();
+		resetZombies();
+
 
 	}
 
@@ -119,22 +121,28 @@ public class Game {
 
 	// endTurn helpers:
 
+	private static void resetZombies(){
+		for(int i=0;i<Game.zombies.size();i++){
+			Game.zombies.get(i).setTarget(null);
+		}
+	}
 	private static void resetHeroes() {
 		for (int i = 0; i < heroes.size(); i++) {
+			System.out.println(Game.map[0][0].isVisible());
 			Hero currHero = heroes.get(i);
 			currHero.setActionsAvailable(currHero.getMaxActions());
+			Game.map[(int) currHero.getLocation().getX()][(int) currHero.getLocation().getY()].setVisible(true);
 			currHero.setTarget(null);
 			currHero.setSpecialAction(false);
 			ArrayList<Point> adjacent = currHero.getAdjacentCells();
-
-			for (int j = 0; j < adjacent.size(); j++) {
-				Character.setMapVisbility(true, adjacent);
-			}
+			
+			Character.setMapVisbility(true, adjacent);
+			
 
 		}
 	}
 
-	private static void zombiesAttackAdjacentCells() throws InvalidTargetException, NotEnoughActionsException {
+	private static void zombiesAttackAdjacentCells() {
 		// checks the adjacent cells to each zombie on the map and the first hero
 		// adjacent to a zombie is attacked
 
@@ -147,7 +155,11 @@ public class Game {
 					Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
 					if (adjacentCharacter instanceof Hero) {
 						currZombie.setTarget(adjacentCharacter);
-						currZombie.attack();
+						try{
+							currZombie.attack();
+						}
+						catch (Exception e){
+						}
 						return;
 					}
 				}
@@ -185,7 +197,34 @@ public class Game {
 	}
 
 	public static boolean checkGameOver() {
-		return heroes.size() == 0 ;
+
+		boolean condition1=false;
+		boolean condition2=true;
+		if(heroes.size()==0){
+			condition1= true;
+		}
+
+
+		
+		//tests that all vaccines are collected
+		for(int i=0;i<15;i++){
+			for(int j=0;j<15;j++){
+				if(map[i][j] instanceof CollectibleCell){
+					CollectibleCell cell =  (CollectibleCell) map[i][j];
+					if(cell.getCollectible() instanceof Vaccine){
+						condition2= false;
+					}
+				}
+			}
+		}
+
+		//checks that no hero has a vaccine in his inventory  
+		for(int i=0;i<heroes.size();i++){
+			if(heroes.get(i).getVaccineInventory().size()!=0){
+				condition2= false;
+			}
+		}
+		return (condition1 || condition2);
 	}
 
 	// Random location spawners:
@@ -243,7 +282,7 @@ public class Game {
 		Zombie zombie = new Zombie();
 		zombie.setLocation(characterRandomPoint());
 		zombies.add(zombie);
-		map[(int) zombie.getLocation().getX()][(int) zombie.getLocation().getY()] = new CharacterCell(zombie, false);
+		map[(int) zombie.getLocation().getX()][(int) zombie.getLocation().getY()] = new CharacterCell(zombie);
 	}
 
 }

@@ -196,6 +196,7 @@ public abstract class Character {
 	}
 
 	//sets visbility of selected list of cells (not all map)
+	//TODO:7ases feeh 7aga 8alat fel setting beta3 co-ordinates
 	public static void setMapVisbility(boolean visbility,ArrayList<Point>cells){
 		
 		for(int i=0;i<cells.size();i++){
