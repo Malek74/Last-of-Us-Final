@@ -26,16 +26,11 @@ public abstract class Character {
 		Zombie z = new Zombie();
 		Zombie z1 = new Zombie();
 		
-		Game.startGame(f);
-		f.move(Direction.RIGHT);
-		f.move(Direction.UP);
+		f.setLocation(new Point(4,4));
+		ArrayList <Point> cells= f.getAdjacentCells();
 
-		
-		for(int i=0;i<15;i++){
-			for(int j=0;j<15;j++){
-				System.out.print(Game.map[i][j].isVisible());
-			}
-			System.out.println();
+		for(int i=0;i<cells.size();i++){
+			System.out.println(cells.get(i));
 		}
 	}
 
@@ -89,7 +84,7 @@ public abstract class Character {
 		else 
 			this.currentHp = currentHp;
 
-		if(this.currentHp==0){
+		if(this.currentHp<=0){
 			onCharacterDeath();
 		}
 	}
