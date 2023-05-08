@@ -78,6 +78,7 @@ public class Game {
 		h.setLocation(new Point(0, 0));
 		heroes.add(h);
 		availableHeroes.remove(h);
+		
 
 		// loop that makes every cell that isnt occupied by anything a CharacterCell
 		for (int hor = 0; hor < map.length; hor++) {
@@ -103,7 +104,7 @@ public class Game {
 			spawnZombie();
 		}
 		Character.setMapVisbility(true, h.getAdjacentCells());
-
+	
 	}
 
 	// QUESTION: should i throw or try catch exceptions
@@ -150,8 +151,8 @@ public class Game {
 			Zombie currZombie = zombies.get(i);
 			ArrayList<Point> adjacentToZombie = currZombie.getAdjacentCells();
 			for (int j = 0; j < adjacentToZombie.size(); j++) {
-				if (map[(int)adjacentToZombie.get(j).getY()][(int)adjacentToZombie.get(j).getX()] instanceof CharacterCell) {
-					CharacterCell adjacentCharacterCell = (CharacterCell) map[(int)adjacentToZombie.get(j).getY()][(int)adjacentToZombie.get(j).getX()];
+				if (map[(int)adjacentToZombie.get(j).getX()][(int)adjacentToZombie.get(j).getY()] instanceof CharacterCell) {
+					CharacterCell adjacentCharacterCell = (CharacterCell) map[(int)adjacentToZombie.get(j).getX()][(int)adjacentToZombie.get(j).getY()];
 					Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
 					if (adjacentCharacter instanceof Hero) {
 						currZombie.setTarget(adjacentCharacter);
@@ -282,7 +283,7 @@ public class Game {
 		Zombie zombie = new Zombie();
 		zombie.setLocation(characterRandomPoint());
 		zombies.add(zombie);
-		map[(int) zombie.getLocation().getX()][(int) zombie.getLocation().getY()] = new CharacterCell(zombie);
+		map[(int) zombie.getLocation().getY()][(int) zombie.getLocation().getX()] = new CharacterCell(zombie);
 	}
 
 }
