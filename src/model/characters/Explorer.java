@@ -1,6 +1,6 @@
 package model.characters;
 import exceptions.*;
-import engine.*;
+
 
 public class Explorer extends Hero {
 	
@@ -9,14 +9,14 @@ public class Explorer extends Hero {
 		super( name, maxHp,  attackDmg,  maxActions) ;	
 	}
 
+	
 	public void attack() throws InvalidTargetException, NotEnoughActionsException{
 		super.attack();
-		int actions= super.getActionsAvailable()-1;
-		super.setActionsAvailable(actions);
+		setActionsAvailable(getActionsAvailable()-1);
 		
 		}
 
-		public void useSpecial() throws NoAvailableResourcesException{
+		public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException{
 			super.useSpecial();
 			Character.setMapVisbility(true);
 			

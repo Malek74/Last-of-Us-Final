@@ -11,15 +11,15 @@ public class Fighter extends Hero{
 	
 	public void attack() throws InvalidTargetException , NotEnoughActionsException{
 		super.attack();
-
-		//handles if special is used or not 
+		//if specialAction is used don't decrement actions
 		if(!(super.isSpecialAction())){
-			int actions= super.getActionsAvailable()-1;
-			super.setActionsAvailable(actions);
+			setActionsAvailable(getActionsAvailable()-1);
 		}
-		
+
+			
 	}
 
+	
 	
 
 

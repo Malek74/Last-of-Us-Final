@@ -4,11 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 
 import engine.Game;
-import model.collectibles.Collectible;
-import model.collectibles.Supply;
 import model.world.Cell;
 import model.world.CharacterCell;
-import model.world.CollectibleCell;
 import exceptions.GameActionException;
 import exceptions.InvalidTargetException;
 import exceptions.NotEnoughActionsException;
@@ -28,23 +25,18 @@ public abstract class Character {
 		Fighter f = new Fighter("'malek'", 100,40,5);
 		Zombie z = new Zombie();
 		Zombie z1 = new Zombie();
-		f.setLocation(new Point(0, 0));
-		z.setLocation(new Point(0, 1));
-		z1.setLocation(new Point(1, 0));
-		Game.map[0][0]= new CharacterCell(f);
-		Game.map[0][1]= new CharacterCell(z);
-		Game.map[1][0]= new CharacterCell(z1);
-		f.setTarget(z);
-		System.out.println(Game.map[0][4]);
-		System.out.println("--------------------------------------------");
-		System.out.println(Game.map[0][0]);
-		System.out.println(Game.map[0][1]);
-		System.out.println("--------------------------------------------");
-		f.attack();
-		System.out.println(Game.map[0][0]);
-		System.out.println(Game.map[0][1]);
-		System.out.println("--------------------------------------------");
-		System.out.println(f.getCurrentHp());
+		
+		Game.startGame(f);
+		f.move(Direction.RIGHT);
+		f.move(Direction.UP);
+
+		
+		for(int i=0;i<15;i++){
+			for(int j=0;j<15;j++){
+				System.out.print(Game.map[i][j].isVisible());
+			}
+			System.out.println();
+		}
 	}
 
 	
@@ -83,48 +75,54 @@ public abstract class Character {
 	}
 
 	public int getCurrentHp() {
+
 		return currentHp;
 	}
 
 	public void setCurrentHp(int currentHp) {
-		if(currentHp < 0) 
+		if(currentHp < 0) {
 			this.currentHp = 0;
+			
+		}
 		else if(currentHp > maxHp) 
 			this.currentHp = maxHp;
 		else 
 			this.currentHp = currentHp;
+
+		if(this.currentHp==0){
+			onCharacterDeath();
+		}
 	}
 
+	
 	public int getAttackDmg() {
 		return attackDmg;
 	}
 
+	//method allows character to attack his target 
 	public void attack() throws InvalidTargetException,NotEnoughActionsException{
 		
-		ArrayList<Cell> adjacentCells=this.getAdjacentCells();
-		int targetXLocation=target.getLocation().x;
-		int targetYLocation=target.getLocation().y;
+		ArrayList<Point> adjacentCells=getAdjacentCells();
 		
-		//TODO: should i do it or not
-		if(!(adjacentCells.contains(Game.map[targetXLocation][targetYLocation]))){
+		
+		//handles exception that target is not in adjacent cells
+		if(!(adjacentCells.contains(target.getLocation()))){
 			throw new InvalidTargetException("Target is out of reach");
 		}
 
-		target.currentHp-=this.attackDmg;
 
-		//removes attacked target (zombie) if he died
-		if(target.currentHp<=0){
-			target.onCharacterDeath();
-		}
-		defend(target);
+		target.setCurrentHp(target.getCurrentHp()-getAttackDmg());
+		target.defend(this);
 		
 	}
 
+	//method allows attacked character to defend himself
+	//TODO: character parameter shouldn't be target (DONE)
 	public void defend(Character c) {
-		this.currentHp-=(c.getAttackDmg())/2;
+		c.setCurrentHp(c.getCurrentHp()-(getAttackDmg()/2));
 	}
 
-	
+	//method that handles map and other variables when character dies
 	public void onCharacterDeath(){
 	
 		//gets dead character location
@@ -132,63 +130,63 @@ public abstract class Character {
 		int y=(int) location.getY();
 
 		//removes dead character from map
-		Game.map[x][y]=null;
+		Game.map[x][y]=new CharacterCell(null);
 		} 
 	
 	/*HELPER METHODS */
 
 	//gets all cells adjacent to character's location
-	public   ArrayList<Cell> getAdjacentCells(){
-		ArrayList<Cell> adjacentCells= new ArrayList<Cell>();
+	public ArrayList<Point> getAdjacentCells(){
+		ArrayList<Point> adjacentCells= new ArrayList<Point>();
 		int x=(int) location.getX();
 		int y= (int) location.getY();
 
 		try {
-			adjacentCells.add(Game.map[x-1][y+1]);
+			Game.map[x-1][y+1]=Game.map[x-1][y+1];
+			adjacentCells.add(new Point(x-1,y+1));
 		} catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
 		}
 
 		try {
-			adjacentCells.add(Game.map[x][y+1]);
+			Game.map[x][y+1]=Game.map[x][y+1];
+			adjacentCells.add(new Point(x,y+1));
 		} catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
 		}
 		try {
-			adjacentCells.add(Game.map[x+1][y+1]);
+			Game.map[x+1][y+1]=Game.map[x+1][y+1];
+			adjacentCells.add(new Point(x+1,y+1));
 		} catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
 		}
 		try {
-			adjacentCells.add(Game.map[x+1][y]);
+			Game.map[x+1][y]=Game.map[x+1][y];
+			adjacentCells.add(new Point(x+1,y));
 		} catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
 		}
 		try {
-			adjacentCells.add(Game.map[x+1][y-1]);
+			Game.map[x+1][y-1]=Game.map[x+1][y-1];
+			adjacentCells.add(new Point(x+1,y-1));
 		} catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
 		}
 
 		try {
-			adjacentCells.add(Game.map[x][y-1]);
+			Game.map[x][y-1]=Game.map[x][y-1];
+			adjacentCells.add(new Point(x,y-1));
 		} catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
 		}
 		try {
-			adjacentCells.add(Game.map[x-1][y-1]);
+			Game.map[x-1][y-1]=Game.map[x-1][y-1];
+			adjacentCells.add(new Point(x-1,y-1));
 		} catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
 		}
 		try {
-			adjacentCells.add(Game.map[x-1][y]);
+			Game.map[x-1][y]=Game.map[x-1][y];
+			adjacentCells.add(new Point(x-1,y));
 		} catch (IndexOutOfBoundsException e) {
-			// TODO: handle exception
 		}
 			return adjacentCells;
 	}
 
-	//sets visbility of all map
+	//sets visbility of all map whether to visible(true) or invisible (false)
 	public static void setMapVisbility(boolean visbility){
 		for(int i=0;i<15;i++){
 			for(int j=0;j<15;j++){
@@ -197,11 +195,12 @@ public abstract class Character {
 		}
 	}
 
-	//sets visbility of selected list of cells (not all grid)
-	public static void setMapVisbility(boolean visbility,ArrayList<Cell>cells){
+	//sets visbility of selected list of cells (not all map)
+	//TODO:7ases feeh 7aga 8alat fel setting beta3 co-ordinates
+	public static void setMapVisbility(boolean visbility,ArrayList<Point>cells){
 		
 		for(int i=0;i<cells.size();i++){
-			cells.get(i).setVisible(visbility);
+			Game.map[(int)cells.get(i).getX()][(int)cells.get(i).getY()].setVisible(visbility);
 		}
 	}
 }
