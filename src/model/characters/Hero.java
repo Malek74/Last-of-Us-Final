@@ -107,13 +107,16 @@ public abstract class Hero extends Character {
 			
 			
 			//handles the input from user and gets new x & y co-ordinates if input movement is valid
-			Point newLocation= validMove(d, y, x);
+			Point newLocation= validMove(d, x, y);
 
 			//gets new cell user wants to move to
 			Cell cell = Game.map[(int) newLocation.getX()][(int) newLocation.getY()];	
 			
+			//checks and handles if new cell is a trap cell
 			if(!movedToTrap(cell,newLocation)){
+				//checks and handles if new cell contains collectible
 				if(!movedToCollectible(cell,newLocation)){
+					//checks and handles if new cell contains character 
 					if(movedToCharacter(cell)){
 						if(getCurrentHp()>0){
 							setLocation(newLocation);
@@ -128,14 +131,7 @@ public abstract class Hero extends Character {
 				}
 			}
 			
-			//checks and handles if new cell is a trap cell
 			
-				
-
-			//checks and handles if new cell contains collectible
-			
-			//checks and handles if new cell contains character 
-			//TODO:character resets him
 			
 			//empties old cell
 			Game.map[x][y]= new CharacterCell(null);
@@ -179,14 +175,14 @@ public abstract class Hero extends Character {
 				throw new NoAvailableResourcesException("No Vaccines in Inventory");
 			}
 			
-			setActionsAvailable(getActionsAvailable()-1);
 			if(!(getTarget() instanceof Zombie)){
 				throw new InvalidTargetException("Target is not a Zombie");   
 			}
-	
+			
 			if(!(getAdjacentCells().contains(getTarget().getLocation()))){
 				throw new InvalidTargetException("Zombie is not adjacent");
 			}
+			setActionsAvailable(getActionsAvailable()-1);
 			vaccineInventory.get(0).use(this);
 
 		
@@ -223,7 +219,7 @@ public abstract class Hero extends Character {
 				//sets new cell 
 				if(getCurrentHp()>0){
 					Game.map[(int) newLocation.getX()][(int) newLocation.getY()]= new CharacterCell(this);
-				setLocation(newLocation);
+					setLocation(newLocation);
 				}
 				return true;
 			}
@@ -249,36 +245,36 @@ public abstract class Hero extends Character {
 			int newX=x;
 			int newY=y;
 			switch (d){
-				case UP: if(y==14){
-					throw new MovementException("Invalid Movement , Cannot move out of Border");
-				}
-				else{
-					newY++;
-				}
-				break;
-				case DOWN: if(y==0){
-					throw new MovementException("Invalid Movement , Cannot move out of Border");
-				}
-				else{
-					newY--;
-				}
-				break;
-				case LEFT:if(x==0){
-					throw new MovementException("Invalid Movement , Cannot move out of Border");
-				}
-				else{
-					newX--;
-				}
-				break;
-				case RIGHT:if(x==14){
+				case UP: if(x==14){
 					throw new MovementException("Invalid Movement , Cannot move out of Border");
 				}
 				else{
 					newX++;
 				}
 				break;
+				case DOWN: if(x==0){
+					throw new MovementException("Invalid Movement , Cannot move out of Border");
+				}
+				else{
+					newX--;
+				}
+				break;
+				case LEFT:if(y==0){
+					throw new MovementException("Invalid Movement , Cannot move out of Border");
+				}
+				else{
+					newY--;
+				}
+				break;
+				case RIGHT:if(y==14){
+					throw new MovementException("Invalid Movement , Cannot move out of Border");
+				}
+				else{
+					newY++;
+				}
+				break;
 			}
-			return new Point(newY, newX);
+			return new Point(newX, newY);
 		}
 }
 
