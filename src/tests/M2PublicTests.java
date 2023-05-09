@@ -37,6 +37,8 @@ import model.world.CharacterCell;
 import model.world.CollectibleCell;
 import model.world.TrapCell;
 
+
+
 @SuppressWarnings({ "all" })
 
 public class M2PublicTests {
@@ -508,6 +510,7 @@ public class M2PublicTests {
 	}
 
 	@Test(timeout = 3000)
+		//TODO: 3akseen el point ??
 	public void testValidMoveUP() throws Exception {
 		int random = (int) (Math.random() * 1000);
 		String nameHero = "Fighter " + random;
@@ -1472,7 +1475,7 @@ public class M2PublicTests {
 
 	}
 
-	@Test()
+	@Test(timeout = 3000)
 	public void testInvalidCureNoTarget() throws Exception {
 		int random = (int) (Math.random() * 1000);
 		String nameHero = "Fighter " + random;
@@ -1616,7 +1619,7 @@ public class M2PublicTests {
 	}
 
 	@Test(timeout = 3000)
-	//TODO: fails because i try to set new Hero adjacent cells and his own to be visible
+		//TODO: fails because i try to set new Hero adjacent cells and his own to be visible
 	public void testValidCureUpdateVaccineInventory() throws Exception {
 		int random = (int) (Math.random() * 1000);
 		String nameHero = "Fighter " + random;
@@ -1670,7 +1673,7 @@ public class M2PublicTests {
 
 	}
 
-	@Test(timeout = 3000)
+	@Test()
 	public void testValidCureUpdateActionsAvailable() throws Exception {
 		int random = (int) (Math.random() * 1000);
 		String nameHero = "Fighter " + random;
@@ -1744,7 +1747,7 @@ public class M2PublicTests {
 	}
 
 	@Test(timeout = 5000)
-	//TODO: tmpMap changes don't affect Game.map
+		//TODO: tmpMap changes don't affect Game.map
 	public void testZombieAttackDirections() {
 
 		int maxHp = 1;
@@ -1891,9 +1894,6 @@ public class M2PublicTests {
 		}
 
 		boolean isAllDead = heroList.size() <= 1;
-		System.out.println(((CharacterCell)Game.map[3][4]).getCharacter());
-		System.out.println(((CharacterCell)tmpMap[3][4]).getCharacter().getName());
-		
 
 		assertEquals("All 8 heros around Zombie should be dead after attacking all of them", isAllDead, true);
 	}
@@ -2196,7 +2196,8 @@ public class M2PublicTests {
 	}
 
 	@Test(timeout = 1000)
-	//TODO:changes in tmpMap do not affect Game.map
+		//TODO:changes in tmpMap do not affect Game.map
+
 	public void testZombieDeath() throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException,
 			InstantiationException, InvocationTargetException {
 
@@ -2254,8 +2255,6 @@ public class M2PublicTests {
 		attackMethod.invoke(character1);
 
 		boolean isDead = ((CharacterCell) tmpMap[1][1]).getCharacter() == null;
-		System.out.println( ((CharacterCell) Game.map[1][1]).getCharacter() == null);
-		System.out.println(!((ArrayList<Zombie>) zombieField.get(gameClass)).contains(character2));
 		isDead = isDead && !((ArrayList<Zombie>) zombieField.get(gameClass)).contains(character2);
 		assertEquals("The Zombie is considered dead if it nolonger exists on the map and in the Zombies array ", isDead,
 				true);
@@ -2316,8 +2315,9 @@ public class M2PublicTests {
 				actionsAvailable);
 	}
 
-	@Test()
-	//TODO: didn't set a target to zombie
+	@Test(timeout = 1000)
+		//TODO: didn't set a target to zombie
+
 	public void testFighterDefenseUpdatesCurrentHP() throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InstantiationException, InvocationTargetException {
 
@@ -2921,7 +2921,8 @@ public class M2PublicTests {
 	}
 
 	@Test()
-	//TODO: fails to get adjacent cells as hero has no location
+		//TODO: fails to get adjacent cells as hero has no location
+
 	public void testUseMethodLogicInVaccine() {
 		ArrayList<?> x = setEnvironment();
 		for (int i = 0; i < Game.map.length; i++) {
@@ -3851,6 +3852,7 @@ public class M2PublicTests {
 
 
 	@Test(timeout = 100000)
+	//TODO:baz sa3at
 	public void testStartGameVaccinesRandomlyPlaced() throws Exception {
 		resetGameStatics();
 		Method m = Class.forName(gamePath).getMethod("startGame", Class.forName(heroPath));
@@ -3884,8 +3886,9 @@ public class M2PublicTests {
 		assertTrue("Supplies should be randomly placed on the map", checkRandomPlaces(supplyPath));
 	}
 
-	@Test()
-	//TODO: ento 3akseen el array beta3t el setLocation
+	@Test(timeout = 10000)
+		//TODO: ento 3akseen el array beta3t el setLocation
+
 	public void testZombiesLocationSet() throws Exception {
 		resetGameStatics();
 		Object fighter = createFighter();
@@ -3989,8 +3992,7 @@ public class M2PublicTests {
 		assertFalse("The game map should be initalized with the correct number of vaccines", count != 5);
 	}
 
-	@Test()
-	//TODO: betbooz sa3at
+	@Test(timeout = 10000)
 	public void testStartGameHeroAtCorrectLocation() throws Exception {
 		resetGameStatics();
 		Method m = Class.forName(gamePath).getMethod("startGame", Class.forName(heroPath));
@@ -4107,8 +4109,7 @@ public class M2PublicTests {
 
 	}
 
-	@Test()
-	//TODO:betbooz sa3at
+	@Test(timeout = 10000)
 	public void testStartGameHeroCellVisibility() throws Exception {
 		resetGameStatics();
 		Method m = Class.forName(gamePath).getMethod("startGame", Class.forName(heroPath));
@@ -4615,6 +4616,7 @@ public class M2PublicTests {
 	}
 
 	@Test(timeout = 10000)
+		//TODO: wa2f el hero feh makan 8alat
 	public void testEndTurnCellVisibilityCorner2() throws Exception {
 		resetGameStatics();
 		Field fd = Class.forName(gamePath).getDeclaredField("heroes");
@@ -5605,8 +5607,7 @@ public class M2PublicTests {
 				fd.get(zombiesInRange.get(2)));
 	}
 
-	@Test()
-	//TODO: ento 3akseen point
+	@Test(timeout = 10000)
 	public void testEndTurnZombieKnockHeroDead1() throws Exception {
 		resetGameStatics();
 		Field fd = Class.forName(gamePath).getDeclaredField("zombies");

@@ -80,6 +80,17 @@ public class Game {
 		availableHeroes.remove(h);
 		
 
+		for(int i=0;i<5;i++){
+			Point location= randomPoint();
+			Game.map[location.x][location.y]= new CollectibleCell(new Vaccine());
+
+			location= randomPoint();
+			Game.map[location.x][location.y]= new CollectibleCell(new Supply());
+
+			location= randomPoint();
+			Game.map[location.x][location.y]= new TrapCell();
+		}
+
 		// loop that makes every cell that isnt occupied by anything a CharacterCell
 		for (int hor = 0; hor < map.length; hor++) {
 			for (int ver = 0; ver < map.length; ver++) {
@@ -88,16 +99,10 @@ public class Game {
 				}
 			}
 		}
-		ArrayList<Point> cells = randomPoint();
-		// spawn 5 vaccines , 5 supplies & 5 trap cells in random locations
-		for (int i = 0; i < 5; i++) {
-			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()] = new CollectibleCell(new Vaccine());
-			cells.remove(0);
-			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()] = new CollectibleCell(new Supply());
-			cells.remove(0);
-			map[(int) cells.get(0).getX()][(int) cells.get(0).getY()] = new TrapCell();
-			cells.remove(0);
-		}
+
+		
+		
+		
 
 		// spawn 10 zombies in random locations
 		for (int i = 0; i < 10; i++) {
@@ -129,7 +134,6 @@ public class Game {
 	}
 	private static void resetHeroes() {
 		for (int i = 0; i < heroes.size(); i++) {
-			System.out.println(Game.map[0][0].isVisible());
 			Hero currHero = heroes.get(i);
 			currHero.setActionsAvailable(currHero.getMaxActions());
 			Game.map[(int) currHero.getLocation().getX()][(int) currHero.getLocation().getY()].setVisible(true);
@@ -204,8 +208,6 @@ public class Game {
 		if(heroes.size()==0){
 			condition1= true;
 		}
-
-
 		
 		//tests that all vaccines are collected
 		for(int i=0;i<15;i++){
@@ -229,24 +231,23 @@ public class Game {
 	}
 
 	// Random location spawners:
-	public static ArrayList<Point> randomPoint() {
+	public static Point randomPoint() {
 		ArrayList<Point> emptyCells = new ArrayList<>();
 		Random rand = new Random();
 
 		int randomX = rand.nextInt(15);
 		int randomY = rand.nextInt(15);
-
 		// keeps generateing random x & y co-ordinates till he finds empty cell
-		CharacterCell cell = (CharacterCell) map[randomX][randomY];
-		for (int i = 0; i < 15; i++) {
+		Cell cell =  map[randomX][randomY];
+		
 			// comment
-			while (!(cell.getCharacter() == null) || (emptyCells.contains(new Point(randomX, randomY)))) {
+			while ((cell!= null)) {
 				randomX = rand.nextInt(15);
 				randomY = rand.nextInt(15);
+				cell =  map[randomX][randomY];
 			}
-			emptyCells.add(new Point(randomX, randomY));
-		}
-		return emptyCells;
+			 return new Point(randomX, randomY);
+	
 
 	}
 
@@ -255,26 +256,38 @@ public class Game {
 
 		int randomX = rand.nextInt(15);
 		int randomY = rand.nextInt(15);
-		boolean found = false;
+		// boolean found = false;
 
-		// keeps generateing random x & y co-ordinates till he finds empty cell
-		while (!found) {
-			try {
+		// // keeps generateing random x & y co-ordinates till he finds empty cell
+		// while (!found) {
+		// 	try {
+		// 		randomX = rand.nextInt(15);
+		// 		randomY = rand.nextInt(15);
+		// 		CharacterCell cell = (CharacterCell) (map[randomX][randomY]);
+		// 		while (!(cell.getCharacter() == null)) {
+		// 			randomX = rand.nextInt(15);
+		// 			randomY = rand.nextInt(15);
+		// 			cell = (CharacterCell) (map[randomX][randomY]);
+		// 		}
+		// 		found = true;
+		// 	} catch (Exception e) {
+
+		// 	}
+		// }
+
+		Cell cell =  Game.map[randomX][randomY] ;
+
+		while((cell instanceof CharacterCell) && ((CharacterCell)cell).getCharacter()!=null ){
+			
 				randomX = rand.nextInt(15);
 				randomY = rand.nextInt(15);
-				CharacterCell cell = (CharacterCell) (map[randomX][randomY]);
-				while (!(cell.getCharacter() == null)) {
-					randomX = rand.nextInt(15);
-					randomY = rand.nextInt(15);
-					cell = (CharacterCell) (map[randomX][randomY]);
-				}
-				found = true;
-			} catch (Exception e) {
+				cell =  Game.map[randomX][randomY] ;
+		}			
+			return new Point(randomX, randomY);
 
-			}
-		}
+			
+		
 
-		return new Point(randomX, randomY);
 
 	}
 
@@ -283,7 +296,7 @@ public class Game {
 		Zombie zombie = new Zombie();
 		zombie.setLocation(characterRandomPoint());
 		zombies.add(zombie);
-		map[(int) zombie.getLocation().getY()][(int) zombie.getLocation().getX()] = new CharacterCell(zombie);
+		map[(int) zombie.getLocation().getX()][(int) zombie.getLocation().getY()] = new CharacterCell(zombie);
 	}
 
 }

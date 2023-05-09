@@ -23,9 +23,8 @@ public class Vaccine implements Collectible {
 
     }
     public void use(Hero h) throws InvalidTargetException {
-    
         
-            ArrayList<Point> adjacentCells = h.getAdjacentCells();
+                ArrayList<Point> adjacentCells = h.getAdjacentCells();
             if(!(adjacentCells.contains(h.getTarget().getLocation()))){
                 throw new InvalidTargetException("Target is not in adjacent cells");
             }
@@ -37,17 +36,21 @@ public class Vaccine implements Collectible {
             throw new InvalidTargetException("Target is not a Zombie");   
         }
 
-        if(!(h.getAdjacentCells().contains(h.getTarget().getLocation()))){
-            throw new InvalidTargetException("Zombie is not adjacent");
-        }
         
         h.getVaccineInventory().remove(0);
         
         Hero newHero= Game.availableHeroes.remove(0);
         newHero.setLocation(h.getTarget().getLocation());
-        // Game.map[(int) h.getTarget().getLocation().getY()][(int) h.getTarget().getLocation().getX()]= new CharacterCell(newHero);
-        // Character.setMapVisbility(true,newHero.getAdjacentCells());
-        // Game.map[(int) h.getTarget().getLocation().getY()][(int) h.getTarget().getLocation().getX()].setVisible(true);
+        Game.map[(int) h.getTarget().getLocation().getX()][(int) h.getTarget().getLocation().getY()]= new CharacterCell(newHero);
+        Character.setMapVisbility(true,newHero.getAdjacentCells());
+        Game.map[(int) h.getTarget().getLocation().getX()][(int) h.getTarget().getLocation().getY()].setVisible(true);
+
+        Game.zombies.remove(h.getTarget());
+        Game.heroes.add(newHero);
+        System.out.println(Game.heroes.size());
+
+        
+       
 
         
 

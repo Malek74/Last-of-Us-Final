@@ -133,51 +133,59 @@ public abstract class Character {
 	//gets all cells adjacent to character's location
 	public ArrayList<Point> getAdjacentCells(){
 		ArrayList<Point> adjacentCells= new ArrayList<Point>();
-		int x=(int) location.getX();
-		int y= (int) location.getY();
+		int hor=(int) location.getX();
+		int ver= (int) location.getY();
 
 		try {
-			Game.map[x-1][y+1]=Game.map[x-1][y+1];
-			adjacentCells.add(new Point(x-1,y+1));
-		} catch (IndexOutOfBoundsException e) {
+			Game.map[ver-1][hor+1]=Game.map[ver-1][hor+1];
+			adjacentCells.add(new Point(hor+1, ver-1));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		try {
+			Game.map[ver][hor+1]=Game.map[ver][hor+1];
+			adjacentCells.add(new Point(hor+1, ver));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		try {
+			Game.map[ver+1][hor+1]=Game.map[ver+1][hor+1];
+			adjacentCells.add(new Point(hor+1, ver+1));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		try {
+			Game.map[ver+1][hor]=Game.map[ver+1][hor];
+			adjacentCells.add(new Point(hor, ver+1));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		try {
+			Game.map[ver+1][hor-1]=Game.map[ver+1][hor-1];
+			adjacentCells.add(new Point(hor-1, ver+1));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		try {
+			Game.map[ver][hor-1]=Game.map[ver][hor-1];
+			adjacentCells.add(new Point(hor-1, ver));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		try {
+			Game.map[ver-1][hor-1]=Game.map[ver-1][hor-1];
+			adjacentCells.add(new Point(hor-1, ver-1));
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		try {
+			Game.map[ver-1][hor]=Game.map[ver-1][hor];
+			adjacentCells.add(new Point(hor, ver-1));
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 
-		try {
-			Game.map[x][y+1]=Game.map[x][y+1];
-			adjacentCells.add(new Point(x,y+1));
-		} catch (IndexOutOfBoundsException e) {
-		}
-		try {
-			Game.map[x+1][y+1]=Game.map[x+1][y+1];
-			adjacentCells.add(new Point(x+1,y+1));
-		} catch (IndexOutOfBoundsException e) {
-		}
-		try {
-			Game.map[x+1][y]=Game.map[x+1][y];
-			adjacentCells.add(new Point(x+1,y));
-		} catch (IndexOutOfBoundsException e) {
-		}
-		try {
-			Game.map[x+1][y-1]=Game.map[x+1][y-1];
-			adjacentCells.add(new Point(x+1,y-1));
-		} catch (IndexOutOfBoundsException e) {
-		}
 
-		try {
-			Game.map[x][y-1]=Game.map[x][y-1];
-			adjacentCells.add(new Point(x,y-1));
-		} catch (IndexOutOfBoundsException e) {
-		}
-		try {
-			Game.map[x-1][y-1]=Game.map[x-1][y-1];
-			adjacentCells.add(new Point(x-1,y-1));
-		} catch (IndexOutOfBoundsException e) {
-		}
-		try {
-			Game.map[x-1][y]=Game.map[x-1][y];
-			adjacentCells.add(new Point(x-1,y));
-		} catch (IndexOutOfBoundsException e) {
-		}
 			return adjacentCells;
 	}
 
