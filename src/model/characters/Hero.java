@@ -175,14 +175,14 @@ public abstract class Hero extends Character {
 				throw new NoAvailableResourcesException("No Vaccines in Inventory");
 			}
 			
-			setActionsAvailable(getActionsAvailable()-1);
 			if(!(getTarget() instanceof Zombie)){
 				throw new InvalidTargetException("Target is not a Zombie");   
 			}
-	
+			
 			if(!(getAdjacentCells().contains(getTarget().getLocation()))){
 				throw new InvalidTargetException("Zombie is not adjacent");
 			}
+			setActionsAvailable(getActionsAvailable()-1);
 			vaccineInventory.get(0).use(this);
 
 		
