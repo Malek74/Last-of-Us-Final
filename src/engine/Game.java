@@ -237,8 +237,8 @@ public class Game {
 		// keeps generateing random x & y co-ordinates till he finds empty cell
 		Cell cell = map[randomX][randomY];
 
-		// comment
-		while ((cell instanceof CharacterCell) && ((CharacterCell) cell).getCharacter() != null) {
+		
+		while (!(cell instanceof CharacterCell) || (cell instanceof CharacterCell && ((CharacterCell) cell).getCharacter()!=null)) {
 			randomX = rand.nextInt(15);
 			randomY = rand.nextInt(15);
 			cell = map[randomX][randomY];
@@ -255,7 +255,7 @@ public class Game {
 		
 		Cell cell = Game.map[randomX][randomY];
 
-		while ((cell instanceof CharacterCell) && ((CharacterCell) cell).getCharacter() != null) {
+		while (!(cell instanceof CharacterCell) || (cell instanceof CharacterCell && ((CharacterCell) cell).getCharacter()!=null)) {
 
 			randomX = rand.nextInt(15);
 			randomY = rand.nextInt(15);

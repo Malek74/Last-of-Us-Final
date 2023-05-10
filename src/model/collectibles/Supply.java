@@ -16,6 +16,7 @@ public class Supply implements Collectible  {
     public void use(Hero h){
 
         h.getSupplyInventory().remove(0);
+        h.setSpecialAction(true);
         // should we add here no available resources exception or the item is already in our inventory?
     }
 
