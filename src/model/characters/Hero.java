@@ -82,7 +82,7 @@ public abstract class Hero extends Character {
 			
 			//handles exception that Hero doesn't have any actions left
 			if(actionsAvailable==0){
-				throw new NotEnoughActionsException("No Enough Actions");
+				throw new NotEnoughActionsException("No Enough Actions to attack");
 			}
 			
 			super.attack();
@@ -123,7 +123,7 @@ public abstract class Hero extends Character {
 						}
 					}
 					else{
-						if(!(cell instanceof TrapCell || cell instanceof CollectibleCell)){
+						if(cell instanceof CharacterCell){
 						throw new MovementException("Cannot move to a cell occupied by another character");
 					}
 				}
@@ -135,12 +135,6 @@ public abstract class Hero extends Character {
 			//empties old cell
 			Game.map[x][y]= new CharacterCell(null);
 
-
-
-			//TODO:how to know cell is empty or when can hero move to cell (DONE)
-			//TODO: cannot move in a cell occupied by character (DONE)
-			//TODO: if user moves to trap he gets damage and trap dissapears (DONE)
-			//TODO: if user moves to supply cell he picks it up 
 			
 			//sets new cell's adjacent cells to be visible 
 			if(getCurrentHp()>0){
@@ -152,22 +146,23 @@ public abstract class Hero extends Character {
 
 		}
 		
-		public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException{
+		public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException, NotEnoughActionsException{
+
 
 			if(supplyInventory.size()==0){
 				throw new NoAvailableResourcesException("No supplies available to perform action");
 			}
 
 
-			//TODO:handle if special action is already activated  (Not Handled)
 			supplyInventory.get(supplyInventory.size()-1).use(this);
 			this.setSpecialAction(true);
+
 			//TODO:use Collectibles use
 		}
 
 		public void cure() throws NoAvailableResourcesException, InvalidTargetException, NotEnoughActionsException{
 			if(actionsAvailable<=0){
-				throw new NotEnoughActionsException("Hero doesn't hace action points left");
+				throw new NotEnoughActionsException("Hero doesn't have action points left");
 			}
 
 			if(vaccineInventory.size()<=0){
@@ -182,7 +177,7 @@ public abstract class Hero extends Character {
 				throw new InvalidTargetException("Zombie is not adjacent");
 			}
 			setActionsAvailable(getActionsAvailable()-1);
-			vaccineInventory.get(0).use(this);
+			vaccineInventory.get(vaccineInventory.size()-1).use(this);
 
 		
 		}
@@ -192,13 +187,12 @@ public abstract class Hero extends Character {
 
 		//checks if cell Hero moved into is Trap if so damage Hero
 		public boolean movedToTrap(Cell cell,Point newLocation){
+			
 			if(cell instanceof TrapCell){
-				
-
 				TrapCell trap = (TrapCell) cell;
 				setCurrentHp(getCurrentHp()-trap.getTrapDamage());
 				Game.map[newLocation.x][newLocation.y]=new CharacterCell(null);
-				
+
 				//sets new cell
 				if(getCurrentHp()>0){
 					Game.map[(int) newLocation.getX()][(int) newLocation.getY()]= new CharacterCell(this);
@@ -213,9 +207,11 @@ public abstract class Hero extends Character {
 		}
 
 		public boolean movedToCollectible(Cell cell , Point newLocation){
+
 			if(cell instanceof CollectibleCell){
 				CollectibleCell collectible= (CollectibleCell) cell;
 				collectible.getCollectible().pickUp(this);
+				Game.map[(int) newLocation.getX()][(int) newLocation.getY()]=new CharacterCell(null);
 
 				//sets new cell 
 				if(getCurrentHp()>0){

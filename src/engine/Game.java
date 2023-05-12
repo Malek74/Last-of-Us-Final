@@ -87,9 +87,9 @@ public class Game {
 					map[hor][ver] = new CharacterCell(null);
 				}
 			}
-
 		}
 
+		//fill map with traps , vaccines and supplies
 		for (int i = 0; i < 5; i++) {
 			Point location = randomPoint();
 			Game.map[location.x][location.y] = new CollectibleCell(new Vaccine());
@@ -103,13 +103,72 @@ public class Game {
 
 		// spawn 10 zombies in random locations
 		for (int i = 0; i < 10; i++) {
+
 			spawnZombie();
 		}
 		Character.setMapVisbility(true, h.getAdjacentCells());
 
 	}
 
-	// QUESTION: should i throw or try catch exceptions
+		// Win or loss helpers:
+		public static boolean checkWin() {
+
+			// tests that all vaccines are collected
+			for (int i = 0; i < 15; i++) {
+				for (int j = 0; j < 15; j++) {
+					if (map[i][j] instanceof CollectibleCell) {
+						CollectibleCell cell = (CollectibleCell) map[i][j];
+						if (cell.getCollectible() instanceof Vaccine) {
+							return false;
+						}
+					}
+				}
+			}
+	
+			// checks that no hero has a vaccine in his inventory
+			for (int i = 0; i < heroes.size(); i++) {
+				if (heroes.get(i).getVaccineInventory().size() != 0) {
+					return false;
+				}
+			}
+	
+			if (heroes.size() < 5) {
+				return false;
+			}
+	
+			return true;
+		}
+
+		public static boolean checkGameOver() {
+
+			boolean condition1 = false;
+			boolean condition2 = true;
+
+			if (heroes.size() == 0) {
+				condition1 = true;
+			}
+	
+			// tests that all vaccines are collected
+			for (int i = 0; i < 15; i++) {
+				for (int j = 0; j < 15; j++) {
+					if (map[i][j] instanceof CollectibleCell) {
+						CollectibleCell cell = (CollectibleCell) map[i][j];
+						if (cell.getCollectible() instanceof Vaccine) {
+							condition2 = false;
+						}
+					}
+				}
+			}
+	
+			// checks that no hero has a vaccine in his inventory
+			for (int i = 0; i < heroes.size(); i++) {
+				if (heroes.get(i).getVaccineInventory().size() != 0) {
+					condition2 = false;
+				}
+			}
+			return (condition1 | condition2);
+		}
+
 	public static void endTurn() throws InvalidTargetException, NotEnoughActionsException {
 		zombiesAttackAdjacentCells();
 		Character.setMapVisbility(false);
@@ -143,7 +202,7 @@ public class Game {
 		}
 	}
 
-	private static void zombiesAttackAdjacentCells() {
+	private static void zombiesAttackAdjacentCells() throws InvalidTargetException, NotEnoughActionsException {
 		// checks the adjacent cells to each zombie on the map and the first hero
 		// adjacent to a zombie is attacked
 
@@ -151,81 +210,21 @@ public class Game {
 			Zombie currZombie = zombies.get(i);
 			ArrayList<Point> adjacentToZombie = currZombie.getAdjacentCells();
 			for (int j = 0; j < adjacentToZombie.size(); j++) {
-				if (map[(int) adjacentToZombie.get(j).getX()][(int) adjacentToZombie.get(j)
-						.getY()] instanceof CharacterCell) {
-					CharacterCell adjacentCharacterCell = (CharacterCell) map[(int) adjacentToZombie.get(j)
-							.getX()][(int) adjacentToZombie.get(j).getY()];
+				if (map[(int) adjacentToZombie.get(j).getX()][(int) adjacentToZombie.get(j).getY()] instanceof CharacterCell) {
+					CharacterCell adjacentCharacterCell = (CharacterCell) map[(int) adjacentToZombie.get(j).getX()][(int) adjacentToZombie.get(j).getY()];
 					Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
 					if (adjacentCharacter instanceof Hero) {
-						// currZombie.setTarget(adjacentCharacter);
-						try {
 							currZombie.attack();
-						} catch (Exception e) {
-						}
-						break;
+							break;
 					}
 				}
 			}
 		}
 	}
 
-	// Win or loss helpers:
-	public static boolean checkWin() {
 
-		// tests that all vaccines are collected
-		for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 15; j++) {
-				if (map[i][j] instanceof CollectibleCell) {
-					CollectibleCell cell = (CollectibleCell) map[i][j];
-					if (cell.getCollectible() instanceof Vaccine) {
-						return false;
-					}
-				}
-			}
-		}
 
-		// checks that no hero has a vaccine in his inventory
-		for (int i = 0; i < heroes.size(); i++) {
-			if (heroes.get(i).getVaccineInventory().size() != 0) {
-				return false;
-			}
-		}
 
-		if (heroes.size() < 5) {
-			return false;
-		}
-
-		return true;
-	}
-
-	public static boolean checkGameOver() {
-
-		boolean condition1 = false;
-		boolean condition2 = true;
-		if (heroes.size() == 0) {
-			condition1 = true;
-		}
-
-		// tests that all vaccines are collected
-		for (int i = 0; i < 15; i++) {
-			for (int j = 0; j < 15; j++) {
-				if (map[i][j] instanceof CollectibleCell) {
-					CollectibleCell cell = (CollectibleCell) map[i][j];
-					if (cell.getCollectible() instanceof Vaccine) {
-						condition2 = false;
-					}
-				}
-			}
-		}
-
-		// checks that no hero has a vaccine in his inventory
-		for (int i = 0; i < heroes.size(); i++) {
-			if (heroes.get(i).getVaccineInventory().size() != 0) {
-				condition2 = false;
-			}
-		}
-		return (condition1 || condition2);
-	}
 
 	// Random location spawners:
 	public static Point randomPoint() {

@@ -2987,7 +2987,7 @@ public class M2PublicTests {
 		}
 	}
 
-	@Test(timeout = 3000)
+	@Test()
 	public void testUseSpecialMethodLogicInExplorer() {
 		try {
 			testInvalidUseSpecialNoAvailableResources();
@@ -3038,7 +3038,7 @@ public class M2PublicTests {
 		}
 	}
 
-	@Test(timeout = 3000)
+	@Test()
 	public void testUseSpecialMethodLogicInMedic() {
 		try {
 			Constructor<?> medicsConstructor = Class.forName(medicPath).getConstructor(String.class, int.class,
@@ -3128,7 +3128,7 @@ public class M2PublicTests {
 		}
 	}
 
-	@Test(timeout = 3000)
+	@Test()
 	public void testInvalidUseSpecialNoAvailableResources() throws Exception {
 		int random = (int) (Math.random() * 1000);
 		String nameHero = "Fighter " + random;

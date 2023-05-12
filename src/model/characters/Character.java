@@ -98,17 +98,13 @@ public abstract class Character {
 	public void attack() throws InvalidTargetException,NotEnoughActionsException{
 		
 		ArrayList<Point> adjacentCells=getAdjacentCells();
-		
-		
+				
 		//handles exception that target is not in adjacent cells
 		if(!(adjacentCells.contains(target.getLocation()))){
 			throw new InvalidTargetException("Target is out of reach");
 		}
-
-
 		target.setCurrentHp(target.getCurrentHp()-getAttackDmg());
 		target.defend(this);
-		
 	}
 
 	//method allows attacked character to defend himself

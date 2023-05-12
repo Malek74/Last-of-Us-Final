@@ -16,11 +16,12 @@ public class Medic extends Hero {
 		
 	}
 
-	public void useSpecial() throws NoAvailableResourcesException , InvalidTargetException {
+	public void useSpecial() throws NoAvailableResourcesException , InvalidTargetException, NotEnoughActionsException {
 		
+
 		if(getTarget()==null){
-			heal(this);
 			super.useSpecial();
+			heal(this);
 		}
 		else{
 			if(getTarget() instanceof Zombie){
@@ -28,11 +29,11 @@ public class Medic extends Hero {
 			}
 			else{
 				if(getAdjacentCells().contains(getTarget().getLocation())){
-					heal(getTarget());
 					super.useSpecial();
+					heal(getTarget());
 				}
 				else{
-					throw new InvalidTargetException("Zombie is not in adjacent cell");
+					throw new InvalidTargetException("Target is not in adjacent cell");
 				}
 			}
 		}
@@ -42,7 +43,5 @@ public class Medic extends Hero {
 	/* HELPERS */
 	private static void heal(Character c) {
 		c.setCurrentHp(c.getMaxHp());
-	}
-
-	
+	}	
 }

@@ -24,18 +24,7 @@ public class Vaccine implements Collectible {
     }
     public void use(Hero h) throws InvalidTargetException {
         
-                // ArrayList<Point> adjacentCells = h.getAdjacentCells();
-            // if(!(adjacentCells.contains(h.getTarget().getLocation()))){
-            //     throw new InvalidTargetException("Target is not in adjacent cells");
-            // }
-
         
-        
-
-        // if(!(h.getTarget() instanceof Zombie)){
-        //     throw new InvalidTargetException("Target is not a Zombie");   
-        // }
-
         
         h.getVaccineInventory().remove(this);
         
@@ -46,17 +35,7 @@ public class Vaccine implements Collectible {
 
         Game.zombies.remove(h.getTarget());
         Game.heroes.add(newHero);
-        System.out.println(Game.heroes.size());
-
-        
-       
-
-
-
-
-
-        // should we add here no available resources exception or the item is already in our inventory?
-    }
+        }
 
 
 }

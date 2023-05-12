@@ -16,8 +16,6 @@ public class Zombie extends Character {
 	}
 
 	public void attack() throws InvalidTargetException,NotEnoughActionsException{
-		// Game.map
-		
 
 		ArrayList <Point> cells = this.getAdjacentCells(); 
 
@@ -27,6 +25,7 @@ public class Zombie extends Character {
 				break;
 			}	
 		}
+
 		if(!(this.getTarget() instanceof Hero)){
 			throw new InvalidTargetException("Target is not a Hero");
 		}
@@ -35,13 +34,13 @@ public class Zombie extends Character {
 
 	//calls super method and spawns new zombie
 	public void onCharacterDeath(){
-		Game.spawnZombie();
 		
-		Game.zombies.remove(this);
 		super.onCharacterDeath();
+		Game.spawnZombie();		
+		Game.zombies.remove(this);
 
 	}
 
 }
 
-
+ 

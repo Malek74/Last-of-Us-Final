@@ -16,10 +16,11 @@ public class Explorer extends Hero {
 		
 		}
 
-		public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException{
+		public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException, NotEnoughActionsException{
 			super.useSpecial();
-			Character.setMapVisbility(true);
-			
+			if(isSpecialAction()){
+				Character.setMapVisbility(true);
+			}			
 		}
 	
 
