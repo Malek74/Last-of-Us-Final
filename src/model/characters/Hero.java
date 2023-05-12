@@ -105,7 +105,6 @@ public abstract class Hero extends Character {
 			int x=(int) this.getLocation().x;
 			int y=(int) this.getLocation().y;
 			
-			
 			//handles the input from user and gets new x & y co-ordinates if input movement is valid
 			Point newLocation= validMove(d, x, y);
 
@@ -198,12 +197,14 @@ public abstract class Hero extends Character {
 
 				TrapCell trap = (TrapCell) cell;
 				setCurrentHp(getCurrentHp()-trap.getTrapDamage());
+				Game.map[newLocation.x][newLocation.y]=new CharacterCell(null);
 				
 				//sets new cell
 				if(getCurrentHp()>0){
 					Game.map[(int) newLocation.getX()][(int) newLocation.getY()]= new CharacterCell(this);
 					setLocation(newLocation);
 				}
+				
 				return true;
 				
 			}
