@@ -21,6 +21,7 @@ public class Game {
 	public static ArrayList<Zombie> zombies = new ArrayList<Zombie>();
 
 	public static void main(String[] args) throws InvalidTargetException, NotEnoughActionsException {
+		System.out.println(null instanceof Hero);
 		// Fighter f = new Fighter("Gasser", 10, 10, 10);
 		// startGame(f);
 		// // f.setActionsAvailable(0);
@@ -214,8 +215,9 @@ public class Game {
 					CharacterCell adjacentCharacterCell = (CharacterCell) map[(int) adjacentToZombie.get(j).getX()][(int) adjacentToZombie.get(j).getY()];
 					Character adjacentCharacter = (Character) adjacentCharacterCell.getCharacter();
 					if (adjacentCharacter instanceof Hero) {
-							currZombie.attack();
-							break;
+						adjacentCharacter.setCurrentHp(adjacentCharacter.getCurrentHp()-currZombie.getAttackDmg());							
+						adjacentCharacter.defend(currZombie);
+						break;
 					}
 				}
 			}
@@ -271,5 +273,16 @@ public class Game {
 		zombies.add(zombie);
 		map[(int) zombie.getLocation().getX()][(int) zombie.getLocation().getY()] = new CharacterCell(zombie);
 	}
+
+	public static void spawnZombie(Point loc) {
+		Zombie zombie = new Zombie();
+		zombie.setLocation(characterRandomPoint());
+		while(zombie.getLocation().x==loc.x && zombie.getLocation().y==loc.y){
+		zombie.setLocation(characterRandomPoint());
+		}
+		zombies.add(zombie);
+		map[(int) zombie.getLocation().getX()][(int) zombie.getLocation().getY()] = new CharacterCell(zombie);
+	}
+
 
 }

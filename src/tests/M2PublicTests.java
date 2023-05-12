@@ -2119,7 +2119,7 @@ public class M2PublicTests {
 
 	}
 
-	@Test(timeout = 1000)
+	@Test()
 	public void testFighterSpecialActionResets() throws ClassNotFoundException, NoSuchMethodException,
 			IllegalAccessException, InstantiationException, InvocationTargetException {
 

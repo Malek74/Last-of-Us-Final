@@ -18,17 +18,22 @@ public class Zombie extends Character {
 	public void attack() throws InvalidTargetException,NotEnoughActionsException{
 
 		ArrayList <Point> cells = this.getAdjacentCells(); 
+		
 
-		for(int i=0;i<cells.size();i++){
-			if(Game.map[cells.get(i).x][cells.get(i).y] instanceof CharacterCell && ((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter()!=null && ((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter() instanceof Hero){
-				setTarget(((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter());
-				break;
-			}	
+		if(getTarget()==null){
+			for(int i=0;i<cells.size();i++){
+				if(Game.map[cells.get(i).x][cells.get(i).y] instanceof CharacterCell && ((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter()!=null && ((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter() instanceof Hero){
+					setTarget(((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter());
+					break;
+				}	
+			}
 		}
 
+		
 		if(!(this.getTarget() instanceof Hero)){
 			throw new InvalidTargetException("Target is not a Hero");
 		}
+
 		super.attack();
 	}
 
@@ -36,7 +41,8 @@ public class Zombie extends Character {
 	public void onCharacterDeath(){
 		
 		super.onCharacterDeath();
-		Game.spawnZombie();		
+
+		Game.spawnZombie(this.getLocation());		
 		Game.zombies.remove(this);
 
 	}

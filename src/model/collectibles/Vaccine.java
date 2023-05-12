@@ -23,11 +23,11 @@ public class Vaccine implements Collectible {
 
     }
     public void use(Hero h) throws InvalidTargetException {
-        
-        
-        
+
+
+
         h.getVaccineInventory().remove(this);
-        
+
         Hero newHero= Game.availableHeroes.remove(0);
         newHero.setLocation(h.getTarget().getLocation());
         Game.map[(int) h.getTarget().getLocation().getX()][(int) h.getTarget().getLocation().getY()]= new CharacterCell(newHero);
@@ -36,6 +36,5 @@ public class Vaccine implements Collectible {
         Game.zombies.remove(h.getTarget());
         Game.heroes.add(newHero);
         }
-
 
 }

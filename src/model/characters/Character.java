@@ -22,16 +22,7 @@ public abstract class Character {
 	public static  void main(String[] args) throws GameActionException{
 
 		
-		Fighter f = new Fighter("'malek'", 100,40,5);
-		Zombie z = new Zombie();
-		Zombie z1 = new Zombie();
 		
-		f.setLocation(new Point(4,4));
-		ArrayList <Point> cells= f.getAdjacentCells();
-
-		for(int i=0;i<cells.size();i++){
-			System.out.println(cells.get(i));
-		}
 	}
 
 	
@@ -100,14 +91,16 @@ public abstract class Character {
 		ArrayList<Point> adjacentCells=getAdjacentCells();
 				
 		//handles exception that target is not in adjacent cells
-		if(!(adjacentCells.contains(target.getLocation()))){
+		System.out.println(target.getLocation() +"men hena " + target.getClass() );
+		System.out.println(getAdjacentCells());
+		if(!(contains(adjacentCells, target.getLocation()))){
 			throw new InvalidTargetException("Target is out of reach");
 		}
 		target.setCurrentHp(target.getCurrentHp()-getAttackDmg());
 		target.defend(this);
 	}
 
-	//method allows attacked character to defend himself
+	//method allows attacked character to defend himcself
 	//TODO: character parameter shouldn't be target (DONE)
 	public void defend(Character c) {
 		c.setCurrentHp(c.getCurrentHp()-(getAttackDmg()/2));
@@ -201,5 +194,13 @@ public abstract class Character {
 		for(int i=0;i<cells.size();i++){
 			Game.map[(int)cells.get(i).getX()][(int)cells.get(i).getY()].setVisible(visbility);
 		}
+	}
+	public boolean contains(ArrayList<Point> cells,Point location){
+		for (Point point : cells) {
+			if(point.x==location.x && point.y==location.y){
+				return true;
+			}
+		}
+		return false;
 	}
 }
