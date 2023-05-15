@@ -1,29 +1,22 @@
 package model.characters;
-import exceptions.*;
 
+import engine.Game;
+import exceptions.InvalidTargetException;
+import exceptions.NoAvailableResourcesException;
 
 public class Explorer extends Hero {
-	
 
-	public Explorer(String name,int maxHp, int attackDmg, int maxActions) {
-		super( name, maxHp,  attackDmg,  maxActions) ;	
+	public Explorer(String name, int maxHp, int attackDamage, int maxActions) {
+		super(name, maxHp, attackDamage, maxActions);
+	}
+	
+	public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException {
+		super.useSpecial();
+		for(int i = 0; i < Game.map.length; i++) {
+			for(int j = 0; j < Game.map[i].length; j++) {
+				Game.map[i][j].setVisible(true);
+			}
+		}
 	}
 
-	
-	public void attack() throws InvalidTargetException, NotEnoughActionsException{
-		super.attack();
-		setActionsAvailable(getActionsAvailable()-1);
-		
-		}
-
-		public void useSpecial() throws NoAvailableResourcesException, InvalidTargetException, NotEnoughActionsException{
-			super.useSpecial();
-			if(isSpecialAction()){
-				Character.setMapVisbility(true);
-			}			
-		}
-	
-
-
-	
 }

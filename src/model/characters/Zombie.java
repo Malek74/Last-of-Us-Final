@@ -1,52 +1,37 @@
 package model.characters;
 
 import java.awt.Point;
-import java.util.ArrayList;
 
-import engine.Game;
-import exceptions.*;
 import model.world.CharacterCell;
+import engine.Game;
+import exceptions.InvalidTargetException;
+import exceptions.NotEnoughActionsException;
 
 public class Zombie extends Character {
-	static int ZOMBIES_COUNT = 1;
-	
+
+	static int ZOMBIES_COUNT;
+
 	public Zombie() {
-		super("Zombie " + ZOMBIES_COUNT, 40, 10);
-		ZOMBIES_COUNT++;		
+		super("Zombie " + ++ZOMBIES_COUNT, 40, 10);
 	}
 
-	public void attack() throws InvalidTargetException,NotEnoughActionsException{
-
-		ArrayList <Point> cells = this.getAdjacentCells(); 
-		
-
-		if(getTarget()==null){
-			for(int i=0;i<cells.size();i++){
-				if(Game.map[cells.get(i).x][cells.get(i).y] instanceof CharacterCell && ((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter()!=null && ((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter() instanceof Hero){
-					setTarget(((CharacterCell)Game.map[cells.get(i).x][cells.get(i).y] ).getCharacter());
-					break;
-				}	
+	public void attack() throws NotEnoughActionsException, InvalidTargetException {
+		Point p = getLocation();
+		for (int i = -1; i <= 1; i++) {
+			int cx = p.x + i;
+			if (cx >= 0 && cx <= 14) {
+				for (int j = -1; j <= 1; j++) {
+					int cy = p.y + j;
+					if (cy >= 0 && cy <= 14) {
+						if (!(i == 0 && j == 0) && Game.map[cx][cy] instanceof CharacterCell
+								&& ((CharacterCell) Game.map[cx][cy]).getCharacter() instanceof Hero) {
+							setTarget(((CharacterCell) Game.map[cx][cy]).getCharacter());
+							super.attack();
+							return;
+						}
+					}
+				}
 			}
 		}
-
-		
-		if(!(this.getTarget() instanceof Hero)){
-			throw new InvalidTargetException("Target is not a Hero");
-		}
-
-		super.attack();
 	}
-
-	//calls super method and spawns new zombie
-	public void onCharacterDeath(){
-		
-		super.onCharacterDeath();
-
-		Game.spawnZombie(this.getLocation());		
-		Game.zombies.remove(this);
-
-	}
-
 }
-
- 
