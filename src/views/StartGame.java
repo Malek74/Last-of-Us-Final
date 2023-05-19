@@ -1,7 +1,6 @@
 package views;
 
 
-import java.awt.Insets;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -9,10 +8,7 @@ import model.characters.*;
 import javafx.scene.control.Label;
 import engine.Game;
 import javafx.application.Application;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -24,9 +20,9 @@ import javafx.scene.layout.BackgroundPosition;
 import javafx.scene.layout.BackgroundRepeat;
 import javafx.scene.layout.BackgroundSize;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -36,7 +32,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class StartGame extends Application{
-	
+	Stage mainStage = new Stage();
 	Image back= new Image("background.jpg") ;
 	String path="soundTrack.mp3";
 	Media media= new Media (new File(path).toURI().toString());
@@ -47,90 +43,112 @@ public class StartGame extends Application{
 	Background loadingBackgroundRoot = new Background(loadingBackground);
 	
 	ArrayList <Label> attributes= new ArrayList<Label>();
+	
+	BorderPane gameRoot= new BorderPane();
+	
+	Gameplay gameScreen = new Gameplay(gameRoot);
+	HerosList herosList= new HerosList();
+	HeroInventory inventory ;
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		
-		
+
 		BorderPane root = new BorderPane();
-		HBox root2= new HBox();
+		HBox heros= new HBox();
+		StackPane root2 = new StackPane();
 		
 		Scene startScreen= new Scene(root,600,600);
 		VBox startGame= new VBox();
 		MediaPlayer player = new MediaPlayer(media);
 		Text title = new Text();
+		
+		
 		Button startBtn = new Button("START GAME");
+		Button quitGame= new Button ("QUIT GAME");
 		
 		Scene chooseHero= new Scene (root2,600,600);
 		
-		primaryStage.setTitle("The last Of Us - Legacy");
 		
-		boolean clicked=false;
+		Alert hoverInstruction = new Alert();
+		hoverInstruction.setText("Hover over character to know his attributes ");
 		
+		
+		
+		
+		//title of game
+		mainStage.setTitle("The last Of Us - Legacy");
+		
+		
+		
+		//sets up start game button and its listener
 		startBtn.setStyle("-fx-background-color: white;");
 		startBtn.setOnAction(event ->{
-			primaryStage.setScene(chooseHero);
-			primaryStage.show();
-			primaryStage.setFullScreen(true);
+			
+			
+			
 			try {
 				Game.loadHeroes("M:\\GUC\\Last_Of_Us_Legacy\\Heroes.csv");
 			} catch (Exception e) {
 				System.out.println("Cannot Load Heros");
 				
 			}
-			System.out.println(Game.availableHeroes.get(0).getAttackDmg());
+			
+			//sets scene of choosing hero
+			mainStage.setScene(chooseHero);
+			mainStage.show();
+			mainStage.setFullScreen(true);
+						
 			GridPane attributesTable= attributesPanel();
 			attributesTable.setAlignment(Pos.CENTER);
+			
 
 			GridPane options= herosPanel();
-			root2.getChildren().add(options);
+			heros.getChildren().add(options);
 			
+			root2.getChildren().add(heros);
+			root2.getChildren().add(hoverInstruction);
 			
-			
-//			root2.getChildren().add(attributesTable);
-//			
-
-//			attributesTable.setAlignment(Pos.CENTER);
-//			root2.setRight(attributesTable);
+			hoverInstruction.popALert();		
 		});
 		
 		
+		//sets up quit button 
+		quitGame.setStyle("-fx-background-color: white;");
+		quitGame.setOnAction(event ->{
+			System.exit(0);
+		});
 		
-		
-		
-		
-		
+		//set alignment of start game root children
+		quitGame.setAlignment(Pos.CENTER);
 		startGame.setAlignment(Pos.CENTER);
-		root2.setAlignment(Pos.CENTER);
+		heros.setAlignment(Pos.CENTER);
 		
 		
+		//sets title of game
 		title.setText("THE\nLAST\nOF US");
 		title.setFont(Font.font("Verdana",50));
 		title.setFill(Color.WHITE);
 		
 		
+//		player.setAutoPlay(true);
 		
-		
-		player.setAutoPlay(true);
-		
+		//sets start game root 
+		startGame.setSpacing(5);
 		startGame.getChildren().add(title);
 		startGame.getChildren().add(startBtn);
+		startGame.getChildren().add(quitGame);
 		
-		primaryStage.setFullScreen(true);
+		//set stage with loading screen
+		mainStage.setFullScreen(true);
 		root.setBackground(loadingBackgroundRoot);
-		root2.setBackground(loadingBackgroundRoot);
+		heros.setBackground(loadingBackgroundRoot);
 		root.setCenter(startGame);
 		
 		
 	 	
-        
-		
-		
-        
-		
-		primaryStage.setScene(startScreen);
-		primaryStage.show();
-		
+		mainStage.setScene(startScreen);
+		mainStage.show();		
 		
 	}
 	
@@ -156,13 +174,45 @@ public class StartGame extends Application{
 	        int x=i;
 	        herosNames.get(x).setOnMouseEntered(event -> {
 				 attributes.get(x).setVisible(true);
-					 
-				 
+					 				 
 			 });
 	        herosNames.get(x).setOnMouseExited(event -> {
 				 attributes.get(x).setVisible(false);
 					 
 			 });
+	        
+	        herosNames.get(x).setOnMouseClicked(event ->{
+	        	Game.startGame(Game.availableHeroes.get(x));
+	        	Alert chosenHero= new Alert();
+	        	inventory= new HeroInventory(Game.availableHeroes.get(x));
+	        	
+	        	chosenHero.setText("You are starting the Game with " +Game.availableHeroes.get(x).getName() + " Good Luck!" );
+	        	
+	        	
+	        	chosenHero.setAlignment(Pos.CENTER);
+	        	gameRoot.setCenter(chosenHero);
+	        	chosenHero.popALert();
+	        	
+	        	gameRoot.setBackground(loadingBackgroundRoot);
+	        	
+	        	
+	        	
+	        	gameScreen.updateMap();
+	        	gameScreen.map.setAlignment(Pos.CENTER);
+	        	herosList.updateHerosList();
+	        	
+	        	gameRoot.setCenter(gameScreen.map);
+	        	gameRoot.setRight(herosList);
+	        	gameRoot.setLeft(inventory);
+	        	
+	        	mainStage.setScene(gameScreen);
+	        	
+	        	
+	        	mainStage.setFullScreen(true);
+	        	
+	        	
+	
+	        });
 	        
 	       
 	    }
@@ -170,15 +220,27 @@ public class StartGame extends Application{
 	    for (int i = 0; i < Game.availableHeroes.size(); i++) {
 	        type = Game.availableHeroes.get(i).getClass();
 
+	        int x=i;
+	        
 	        ImageView imageView = new ImageView();
 	        imageView.setFitWidth(100);
 	        imageView.setFitHeight(100);
+	        imageView.setOnMouseEntered(event -> {
+				 attributes.get(x).setVisible(true);
+				 
+			 });
+	        imageView.setOnMouseExited(event -> {
+				 attributes.get(x).setVisible(false);
+					 
+			 });
+	        
 	        
 	        if (type.equals(Fighter.class)) {
 	            imageView.setImage(new Image("fighter.png"));
 	            heroTable.add(imageView, 0, i);
 	            heroTable.add(herosNames.get(i), 1, i);
 	            heroTable.add(attributes.get(i), 2, i);
+	            
 	        } else if (type.equals(Medic.class)) {
 	            imageView.setImage(new Image("medic.jpg"));
 	            heroTable.add(imageView, 0, i);
