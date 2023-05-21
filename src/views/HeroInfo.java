@@ -23,7 +23,10 @@ public class HeroInfo extends Label{
 		this.setTextFill(Color.WHITE);
 		this.setAlignment(Pos.CENTER);
         this.setPadding(new Insets(10));
-//        this.setStyle("-fx-border-color: white;");
+//       
+        this.setOnMouseClicked(event -> {
+        	StartGame.activeHero=h;
+        });
         
         
         

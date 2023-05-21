@@ -24,23 +24,12 @@ public class test extends Application {
     @Override
     
 
-    	public void start(Stage primaryStage) throws Exception {
-    		Rectangle rect1 = new Rectangle(20,20,200,150);
-    		rect1.setFill(Color.RED);
-    		TranslateTransition translate = new TranslateTransition();
-    		translate.setByX(100);
-    		translate.setDuration(Duration.millis(1000));
-//    		translate.setCycleCount(10);
-//    		translate.setAutoReverse(true);
-    		translate.setNode(rect1);
-    		translate.play();
-    		Group root = new Group();
-    		root.getChildren().add(rect1);
-    		Scene scene = new Scene(root,500,400);
-    		primaryStage.setScene(scene);
-    		primaryStage.setTitle("Translation Example");
-    		primaryStage.show();
-    		}
+    public void start(Stage primaryStage) throws Exception {
+    	
+		
+		
+		
+    }
     
     public static void main(String[] args) {
 		launch(args);

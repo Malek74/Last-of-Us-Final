@@ -4,7 +4,10 @@ package views;
 import java.io.File;
 import java.util.ArrayList;
 
+
+
 import model.characters.*;
+import model.world.CharacterCell;
 import javafx.scene.control.Label;
 import engine.Game;
 import javafx.application.Application;
@@ -47,8 +50,21 @@ public class StartGame extends Application{
 	BorderPane gameRoot= new BorderPane();
 	
 	Gameplay gameScreen = new Gameplay(gameRoot);
-	HerosList herosList= new HerosList();
+	StackPane grid = new StackPane();
+	HerosList herosList = new HerosList();
+	ActionsList actions = new ActionsList(); 
+	GridPane rightBar=new GridPane();
 	HeroInventory inventory ;
+	static Hero activeHero;
+	Controller controller = new Controller();
+	
+	
+	Button displayHerosBtn= new Button("Heroes");
+	Button displayActionsBtn= new Button("Actions");
+	
+	
+	
+	
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
@@ -148,7 +164,9 @@ public class StartGame extends Application{
 		
 	 	
 		mainStage.setScene(startScreen);
-		mainStage.show();		
+		mainStage.show();	
+		
+		
 		
 	}
 	
@@ -183,35 +201,37 @@ public class StartGame extends Application{
 	        
 	        herosNames.get(x).setOnMouseClicked(event ->{
 	        	Game.startGame(Game.availableHeroes.get(x));
-	        	Alert chosenHero= new Alert();
-	        	inventory= new HeroInventory(Game.availableHeroes.get(x));
-	        	
-	        	chosenHero.setText("You are starting the Game with " +Game.availableHeroes.get(x).getName() + " Good Luck!" );
+	        	activeHero=Game.heroes.get(0);
 	        	
 	        	
-	        	chosenHero.setAlignment(Pos.CENTER);
-	        	gameRoot.setCenter(chosenHero);
-	        	chosenHero.popALert();
-	        	
-	        	gameRoot.setBackground(loadingBackgroundRoot);
+	        	createButtonsFunctionality();
+	        	rightBar.add(displayActionsBtn, 0, 0);
+	        	rightBar.add(displayHerosBtn, 1, 0);
 	        	
 	        	
 	        	
 	        	gameScreen.updateMap();
 	        	gameScreen.map.setAlignment(Pos.CENTER);
-	        	herosList.updateHerosList();
+	            grid.getChildren().add(gameScreen.map);
 	        	
-	        	gameRoot.setCenter(gameScreen.map);
-	        	gameRoot.setRight(herosList);
+	        	
+	        	
+	        	inventory= new HeroInventory(Game.availableHeroes.get(x));
+	        	
+	        	
+	        	
+	        	
+	        	gameRoot.setBackground(loadingBackgroundRoot);
+	        	
+	        	
+	        	controller.move(gameScreen,grid);
+	        	gameRoot.setCenter(grid);
+	        	gameRoot.setRight(rightBar);
 	        	gameRoot.setLeft(inventory);
 	        	
 	        	mainStage.setScene(gameScreen);
-	        	
-	        	
 	        	mainStage.setFullScreen(true);
 	        	
-	        	
-	
 	        });
 	        
 	       
@@ -231,10 +251,47 @@ public class StartGame extends Application{
 			 });
 	        imageView.setOnMouseExited(event -> {
 				 attributes.get(x).setVisible(false);
-					 
 			 });
 	        
-	        
+	        imageView.setOnMouseClicked(event ->{
+	        	Game.startGame(Game.availableHeroes.get(x));
+	        	activeHero=Game.heroes.get(0);
+	        	System.out.println(activeHero.getLocation());
+	        	
+	        	
+	        	createButtonsFunctionality();
+	        	rightBar.add(displayActionsBtn, 0, 0);
+	        	rightBar.add(displayHerosBtn, 1, 0);
+	        	
+	        	
+	        	
+	        	gameScreen.updateMap();
+	        	gameScreen.map.setAlignment(Pos.CENTER);
+	            grid.getChildren().add(gameScreen.map);
+	        	
+	        	
+	        	
+	        	inventory= new HeroInventory(Game.availableHeroes.get(x));
+	        	
+	        	
+	        	
+	        	
+	        	
+	        	gameRoot.setCenter(grid);
+	        	
+	        	
+	        	gameRoot.setBackground(loadingBackgroundRoot);
+	        	
+	        	
+	        	controller.move(gameScreen,grid);
+	        	gameRoot.setCenter(gameScreen.map);
+	        	gameRoot.setRight(rightBar);
+	        	gameRoot.setLeft(inventory);
+	        	
+	        	mainStage.setScene(gameScreen);
+	        	mainStage.setFullScreen(true);
+	        });
+	            
 	        if (type.equals(Fighter.class)) {
 	            imageView.setImage(new Image("fighter.png"));
 	            heroTable.add(imageView, 0, i);
@@ -283,5 +340,26 @@ public class StartGame extends Application{
 		return " Health: " + Game.availableHeroes.get(index).getCurrentHp() + "\n Max Actions: " + Game.availableHeroes.get(index).getActionsAvailable() + "\n Attack Damages: " + Game.availableHeroes.get(index).getAttackDmg();
 	}
 
+	private void createButtonsFunctionality(){
+		displayActionsBtn.setStyle("-fx-background-color: white;");
+		displayActionsBtn.setOnMouseClicked(event ->{
+			rightBar.getChildren().remove(herosList);
+			rightBar.add(actions,0,1,2,1);
+		});
+		
+		displayHerosBtn.setStyle("-fx-background-color: white;");
+		displayHerosBtn.setOnMouseClicked(event ->{
+			rightBar.getChildren().remove(actions);
+			herosList.updateHerosList();
+			rightBar.add(herosList,0,1,2,1);
+		});
+		
+		
+		
+	}
+	
+	
+	
+	
 	
 }
