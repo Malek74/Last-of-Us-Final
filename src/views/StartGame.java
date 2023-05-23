@@ -204,7 +204,7 @@ public class StartGame extends Application{
 	        	Game.startGame(Game.availableHeroes.get(x));
 	        	activeHero=Game.heroes.get(0);
 	        	//TODO:DOn't forget to delete
-	        	activeHero.setActionsAvailable(10000);
+	        	
 	        	
 //	        	createButtonsFunctionality();
 	        	rightBar.add(displayActionsBtn, 0, 0);
@@ -222,7 +222,7 @@ public class StartGame extends Application{
 	        	
 	        	
 	        	
-	        	
+	        	herosList.updateHerosList();
 	        	gameRoot.setBackground(loadingBackgroundRoot);
 	        	
 	        	
