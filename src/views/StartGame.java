@@ -3,9 +3,6 @@ package views;
 
 import java.io.File;
 import java.util.ArrayList;
-
-
-
 import model.characters.*;
 import model.world.CharacterCell;
 import javafx.scene.control.Label;
@@ -37,8 +34,9 @@ import javafx.stage.Stage;
 public class StartGame extends Application{
 	Stage mainStage = new Stage();
 	Image back= new Image("background.jpg") ;
-	String path="soundTrack.mp3";
-	Media media= new Media (new File(path).toURI().toString());
+	static String path="soundTrack.mp3";
+	static Media media= new Media (new File(path).toURI().toString());
+	static MediaPlayer player = new MediaPlayer(media);
 	BackgroundImage loadingBackground= new BackgroundImage(back,  BackgroundRepeat.NO_REPEAT,
             BackgroundRepeat.NO_REPEAT,
             BackgroundPosition.DEFAULT,
@@ -47,14 +45,14 @@ public class StartGame extends Application{
 	
 	ArrayList <Label> attributes= new ArrayList<Label>();
 	
-	BorderPane gameRoot= new BorderPane();
+	static BorderPane gameRoot= new BorderPane();
 	
-	Gameplay gameScreen = new Gameplay(gameRoot);
-	StackPane grid = new StackPane();
-	HerosList herosList = new HerosList();
+	static Gameplay gameScreen = new Gameplay(gameRoot);
+	public static StackPane grid = new StackPane();
+	static HerosList herosList = new HerosList();
 	ActionsList actions = new ActionsList(); 
 	GridPane rightBar=new GridPane();
-	HeroInventory inventory ;
+	static HeroInventory inventory ;
 	static Hero activeHero;
 	Controller controller = new Controller();
 	
@@ -76,12 +74,12 @@ public class StartGame extends Application{
 		
 		Scene startScreen= new Scene(root,600,600);
 		VBox startGame= new VBox();
-		MediaPlayer player = new MediaPlayer(media);
+		
 		Text title = new Text();
 		
 		
-		Button startBtn = new Button("START GAME");
-		Button quitGame= new Button ("QUIT GAME");
+		Button startBtn = new GameButtons("START GAME");
+		GameButtons quitGame= new GameButtons ("QUIT GAME");
 		
 		Scene chooseHero= new Scene (root2,600,600);
 		
@@ -98,7 +96,7 @@ public class StartGame extends Application{
 		
 		
 		//sets up start game button and its listener
-		startBtn.setStyle("-fx-background-color: white;");
+		
 		startBtn.setOnAction(event ->{
 			
 			
@@ -130,7 +128,7 @@ public class StartGame extends Application{
 		
 		
 		//sets up quit button 
-		quitGame.setStyle("-fx-background-color: white;");
+		
 		quitGame.setOnAction(event ->{
 			System.exit(0);
 		});
@@ -143,11 +141,14 @@ public class StartGame extends Application{
 		
 		//sets title of game
 		title.setText("THE\nLAST\nOF US");
-		title.setFont(Font.font("Verdana",50));
+		title.setFont(Font.font("Impact",75));
 		title.setFill(Color.WHITE);
 		
 		
-//		player.setAutoPlay(true);
+		
+
+		// Set autoPlay to true
+		player.setAutoPlay(true);
 		
 		//sets start game root 
 		startGame.setSpacing(5);
@@ -188,7 +189,7 @@ public class StartGame extends Application{
 	    for (int i = 0; i < Game.availableHeroes.size(); i++) {
 	        herosNames.add(new Text(Game.availableHeroes.get(i).getName()));
 	        herosNames.get(i).setFill(Color.WHITE);
-	        herosNames.get(i).setFont(Font.font("Verdana",50));
+	        herosNames.get(i).setFont(Font.font("Impact",50));
 	        int x=i;
 	        herosNames.get(x).setOnMouseEntered(event -> {
 				 attributes.get(x).setVisible(true);
@@ -202,9 +203,10 @@ public class StartGame extends Application{
 	        herosNames.get(x).setOnMouseClicked(event ->{
 	        	Game.startGame(Game.availableHeroes.get(x));
 	        	activeHero=Game.heroes.get(0);
+	        	//TODO:DOn't forget to delete
+	        	activeHero.setActionsAvailable(10000);
 	        	
-	        	
-	        	createButtonsFunctionality();
+//	        	createButtonsFunctionality();
 	        	rightBar.add(displayActionsBtn, 0, 0);
 	        	rightBar.add(displayHerosBtn, 1, 0);
 	        	
@@ -226,8 +228,9 @@ public class StartGame extends Application{
 	        	
 	        	controller.move(gameScreen,grid);
 	        	gameRoot.setCenter(grid);
-	        	gameRoot.setRight(rightBar);
+	        	gameRoot.setRight(herosList);
 	        	gameRoot.setLeft(inventory);
+	        	gameRoot.setBottom(actions);
 	        	
 	        	mainStage.setScene(gameScreen);
 	        	mainStage.setFullScreen(true);
@@ -256,12 +259,12 @@ public class StartGame extends Application{
 	        imageView.setOnMouseClicked(event ->{
 	        	Game.startGame(Game.availableHeroes.get(x));
 	        	activeHero=Game.heroes.get(0);
-	        	System.out.println(activeHero.getLocation());
 	        	
 	        	
-	        	createButtonsFunctionality();
-	        	rightBar.add(displayActionsBtn, 0, 0);
-	        	rightBar.add(displayHerosBtn, 1, 0);
+	        	
+	        	herosList.updateHerosList();
+	        	
+	        	
 	        	
 	        	
 	        	
@@ -274,9 +277,6 @@ public class StartGame extends Application{
 	        	inventory= new HeroInventory(Game.availableHeroes.get(x));
 	        	
 	        	
-	        	
-	        	
-	        	
 	        	gameRoot.setCenter(grid);
 	        	
 	        	
@@ -285,7 +285,7 @@ public class StartGame extends Application{
 	        	
 	        	controller.move(gameScreen,grid);
 	        	gameRoot.setCenter(gameScreen.map);
-	        	gameRoot.setRight(rightBar);
+	        	gameRoot.setRight(herosList);
 	        	gameRoot.setLeft(inventory);
 	        	
 	        	mainStage.setScene(gameScreen);
@@ -325,7 +325,7 @@ public class StartGame extends Application{
 		    		 attributes.add(new Label());
 		    		 attributes.get(i).setText(text);
 		    		 attributes.get(i).setTextFill(Color.WHITE);
-		    		 attributes.get(i).setFont(Font.font("Verdana",25));	
+		    		 attributes.get(i).setFont(Font.font("Impact",25));	
 		    		 attributes.get(i).setVisible(false);
 		    		 attributes.get(i).setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
 		    		 
@@ -340,24 +340,25 @@ public class StartGame extends Application{
 		return " Health: " + Game.availableHeroes.get(index).getCurrentHp() + "\n Max Actions: " + Game.availableHeroes.get(index).getActionsAvailable() + "\n Attack Damages: " + Game.availableHeroes.get(index).getAttackDmg();
 	}
 
-	private void createButtonsFunctionality(){
-		displayActionsBtn.setStyle("-fx-background-color: white;");
-		displayActionsBtn.setOnMouseClicked(event ->{
-			rightBar.getChildren().remove(herosList);
-			rightBar.add(actions,0,1,2,1);
-		});
-		
-		displayHerosBtn.setStyle("-fx-background-color: white;");
-		displayHerosBtn.setOnMouseClicked(event ->{
-			rightBar.getChildren().remove(actions);
-			herosList.updateHerosList();
-			rightBar.add(herosList,0,1,2,1);
-		});
-		
-		
-		
-	}
-	
+//	private void createButtonsFunctionality(){
+//		
+//		
+//		displayActionsBtn.setStyle("-fx-background-color: white;");
+//		displayActionsBtn.setOnMouseClicked(event ->{
+//			rightBar.getChildren().remove(herosList);
+//		});
+//		
+//		displayHerosBtn.setStyle("-fx-background-color: white;");
+//		displayHerosBtn.setOnMouseClicked(event ->{
+//			rightBar.getChildren().remove(actions);
+//			herosList.updateHerosList();
+//			rightBar.add(herosList,0,1,2,1);
+//		});
+//		
+//		
+//		
+//	}
+//	
 	
 	
 	

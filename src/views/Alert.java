@@ -24,7 +24,7 @@ public class Alert extends Label {
 	public Alert(){
 		super();
 		this.setVisible(false);
-		this.setFont(Font.font("Verdana",25));
+		this.setFont(Font.font("Impact",25));
 		this.setBackground(new Background(new BackgroundFill(Color.GRAY, null, null)));
 		this.setTextFill(Color.WHITE);
 		this.setTranslateZ(5);
@@ -62,7 +62,10 @@ public class Alert extends Label {
         };
 		root.addEventFilter(KeyEvent.KEY_PRESSED, disableKeysHandler);
         root.addEventFilter(KeyEvent.KEY_RELEASED, disableKeysHandler);
-        
+        StartGame.grid.addEventFilter(KeyEvent.KEY_PRESSED, disableKeysHandler);
+        StartGame.grid.addEventFilter(KeyEvent.KEY_RELEASED, disableKeysHandler);
+        StartGame.gameScreen.addEventFilter(KeyEvent.KEY_PRESSED, disableKeysHandler);
+        StartGame.gameScreen.addEventFilter(KeyEvent.KEY_RELEASED, disableKeysHandler);
         
 		
 		pause.setOnFinished(event -> {
@@ -70,6 +73,14 @@ public class Alert extends Label {
 			root.setMouseTransparent(false);
 	        root.removeEventFilter(KeyEvent.KEY_PRESSED, disableKeysHandler);
 	        root.removeEventFilter(KeyEvent.KEY_RELEASED, disableKeysHandler);
+	        
+	        
+	        StartGame.grid.removeEventFilter(KeyEvent.KEY_PRESSED, disableKeysHandler);
+	        StartGame.grid.removeEventFilter(KeyEvent.KEY_RELEASED, disableKeysHandler);
+	        
+	        StartGame.gameScreen.removeEventFilter(KeyEvent.KEY_PRESSED, disableKeysHandler);
+	        StartGame.gameScreen.removeEventFilter(KeyEvent.KEY_RELEASED, disableKeysHandler);
+	        
 			});
         
 		pause.playFromStart();

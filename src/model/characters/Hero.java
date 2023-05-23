@@ -3,6 +3,7 @@ package model.characters;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import views.gameOver;
 import model.collectibles.Supply;
 import model.collectibles.Vaccine;
 import model.world.CharacterCell;
@@ -147,6 +148,9 @@ public abstract class Hero extends Character {
 		if (!(this.getTarget() instanceof Zombie))
 			throw new InvalidTargetException("You can only cure zombies.");
 		this.vaccineInventory.get(0).use(this);
+		if(Game.checkWin()){
+			gameOver.display("YOU WON!");
+		}
 		actionsAvailable--;
 	}
 

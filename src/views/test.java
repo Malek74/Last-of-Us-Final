@@ -25,7 +25,12 @@ public class test extends Application {
     
 
     public void start(Stage primaryStage) throws Exception {
-    	
+    	pauseButton b= new pauseButton();
+    	BorderPane root=new BorderPane();
+    	Scene s= new Scene(root);
+    	root.setCenter(b);
+    	primaryStage.setScene(s);
+    	primaryStage.show();
 		
 		
 		

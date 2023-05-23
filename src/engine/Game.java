@@ -48,9 +48,9 @@ public class Game {
 	}
 
 	public static void endTurn() throws NotEnoughActionsException, InvalidTargetException {
-		for (Zombie zombie : zombies) {
-			zombie.attack();
-			zombie.setTarget(null);
+		for (int i=0;i<zombies.size();i++) {
+			zombies.get(i).attack();
+			zombies.get(i).setTarget(null);
 		}
 		spawnNewZombie();
 		for (int i = 0; i < map.length; i++)

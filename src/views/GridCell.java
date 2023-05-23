@@ -23,6 +23,8 @@ public class GridCell extends Rectangle{
 		this.setStroke(Color.WHITE);
 		this.setStrokeWidth(0.5);
 		
+		
+		
 	}
 	
 	public void setImage(String imagePath){
@@ -32,8 +34,8 @@ public class GridCell extends Rectangle{
         imageView.setFitHeight(65);
         imageView.setFitWidth(65);
 		
-		   javafx.scene.paint.ImagePattern pattern = new javafx.scene.paint.ImagePattern(imageView.getImage());
-		   this.setFill(pattern);
+		javafx.scene.paint.ImagePattern pattern = new javafx.scene.paint.ImagePattern(imageView.getImage());
+		this.setFill(pattern);
 	}
 	
 	public void move(Direction d){
@@ -53,6 +55,8 @@ public class GridCell extends Rectangle{
 				translate.setByX(-65);
 				break;
 		}
+		
+		
 		
 		
 		translate.setNode(this);

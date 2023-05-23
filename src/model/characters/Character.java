@@ -2,6 +2,9 @@ package model.characters;
 
 import java.awt.Point;
 
+import views.Gameplay;
+import views.StartGame;
+import views.gameOver;
 import model.world.CharacterCell;
 import engine.Game;
 import exceptions.InvalidTargetException;
@@ -15,6 +18,7 @@ public abstract class Character {
 	private Point location;
 	private int attackDmg;
 	private Character target;
+	
 
 	public Character(String name, int maxHp, int attackDamage) {
 		this.name = name;
@@ -84,8 +88,14 @@ public abstract class Character {
 			Game.spawnNewZombie();
 		} else if (this instanceof Hero) {
 			Game.heroes.remove(this);
+			if(Game.checkGameOver()){
+				 gameOver.display("GAME OVER!");
+				 
+				 
+			}
 		}
 		Game.map[p.x][p.y] = new CharacterCell(null);
+		Game.map[p.x][p.y].setVisible(true);;
 	}
 
 }
